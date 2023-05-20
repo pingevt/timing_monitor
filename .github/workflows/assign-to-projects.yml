@@ -22,6 +22,6 @@ jobs:
           gh_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           user: pingevt
           # organization: pingevt
-          project_id: 1
+          project_id: 3
           resource_node_id: ${{ github.event.issue.node_id }}
           status_value: ${{ env.target }} # Target status
