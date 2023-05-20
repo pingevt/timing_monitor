@@ -104,6 +104,24 @@ function timing_monitor_views_data() {
     ],
   ];
 
+  $data['timing_monitor_log']['marker'] = [
+    'title' => t('Marker'),
+    'help' => t('The type of marker.'),
+    'field' => [
+      'id' => 'standard',
+    ],
+    'argument' => [
+      'id' => 'string',
+    ],
+    'filter' => [
+      'id' => 'in_operator',
+      'options callback' => 'timing_monitor_get_type',
+    ],
+    'sort' => [
+      'id' => 'standard',
+    ],
+  ];
+
   $data['timing_monitor_log']['message'] = [
     'title' => t('Message'),
     'help' => t('The actual message of the log entry.'),
@@ -293,6 +311,20 @@ function timing_monitor_views_data() {
 
   $data['timing_monitor_log']['timer'] = [
     'title' => t('Timer'),
+    'help' => t('The amount of seconds.'),
+    'field' => [
+      'id' => 'standard',
+    ],
+    'filter' => [
+      'id' => 'numeric',
+    ],
+    'argument' => [
+      'id' => 'numeric',
+    ],
+  ];
+
+  $data['timing_monitor_log']['duration'] = [
+    'title' => t('Duration'),
     'help' => t('The amount of seconds.'),
     'field' => [
       'id' => 'standard',

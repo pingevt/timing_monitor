@@ -9,11 +9,17 @@ use Drupal\Core\Logger\RfcLogLevel;
  */
 class TimingMonitor {
 
+  const START = "start";
+  const MARK = "mark";
+  const FINISH = "finish";
+
   /**
    *
    */
   protected $startTime = NULL;
   protected $uuid = NULL;
+
+  protected $starts = [];
 
   /**
    *
@@ -36,7 +42,7 @@ class TimingMonitor {
       $uuid_service = \Drupal::service('uuid');
       self::$instance->uuid = $uuid_service->generate();
 
-      self::$instance->logTiming(RfcLogLevel::DEBUG, "timing_monitor", "init", []);
+      self::$instance->logTiming(RfcLogLevel::DEBUG, "timing_monitor", marker: "start", msg: "init", vars: []);
     }
 
     return self::$instance;
@@ -48,11 +54,18 @@ class TimingMonitor {
     }
   }
 
-  public function logTiming($severity, $type, $msg = "", $vars = []) {
+  public function logTiming($severity, $type, $marker = "mark", $msg = "", $vars = []) {
+    $timer = microtime(true) - $this->startTime;
+
+    // Set starts.
+    if ($marker == "start") {
+      $this->starts[$type] = $timer;
+    }
 
     $this->monLog[] = [
       'type' => $type,
-      'timer' => microtime(true) - $this->startTime,
+      'marker' => $marker,
+      'timer' => $timer,
       'severity' => $severity,
       'msg' => $msg,
       'vars' => $vars,
@@ -61,22 +74,33 @@ class TimingMonitor {
   }
 
   public function saveTimingLog() {
+    // Finish timing.
+    $this->logTiming(RfcLogLevel::DEBUG, "timing_monitor", marker: "finish", msg: "finish", vars: []);
+
     $request = \Drupal::request();
     $current_user_id = (int) \Drupal::currentUser()->id();
 
     $data = [];
 
     foreach ($this->monLog as $log) {
+      // Calculate duration.
+      $duration = NULL;
+      if (($log['marker'] == "mark" || $log['marker'] == "finish") && isset($this->starts[$log['type']])) {
+        $duration = $log['timer'] - $this->starts[$log['type']];
+      }
+
       $data[] = [
         'uid' => $current_user_id,
         'session_uuid' => $this->uuid,
         'type' => $log['type'],
+        'marker' => $log['marker'],
         'message' => $log['msg'],
         'variables' => serialize($log['vars']),
         'severity' => $log['severity'],
         'path' => $request->getRequestUri(),
         'method' => $request->getMethod(),
         'timer' => $log['timer'],
+        'duration' => $duration,
         'timestamp' => $log['timestamp'],
       ];
     }
@@ -87,7 +111,6 @@ class TimingMonitor {
   }
 
   protected function saveLogToDb($data) {
-    $request = \Drupal::request();
 
     $insert = \Drupal::service('database')->insert('timing_monitor_log');
     $insert->fields(array_keys($data[0]));

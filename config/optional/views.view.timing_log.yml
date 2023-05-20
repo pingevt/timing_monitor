@@ -7,6 +7,9 @@ dependencies:
     - dblog
     - timing_monitor
     - user
+  enforced:
+    module:
+      - timing_monitor
 id: timing_log
 label: 'Timing Log'
 module: views
@@ -123,6 +126,55 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
+        marker:
+          id: marker
+          table: timing_monitor_log
+          field: marker
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: standard
+          label: Marker
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
         severity:
           id: severity
           table: timing_monitor_log
@@ -182,6 +234,55 @@ display:
           admin_label: ''
           plugin_id: standard
           label: Timer
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+        duration:
+          id: duration
+          table: timing_monitor_log
+          field: duration
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: standard
+          label: Duration
           exclude: false
           alter:
             alter_text: false
@@ -574,7 +675,105 @@ display:
             field_identifier: ''
           exposed: false
       arguments: {  }
-      filters: {  }
+      filters:
+        severity:
+          id: severity
+          table: timing_monitor_log
+          field: severity
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: in_operator
+          operator: in
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: severity_op
+            label: 'Severity level'
+            description: ''
+            use_operator: false
+            operator: severity_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: severity
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              blogger: '0'
+              content_strategist: '0'
+              marketing: '0'
+              editor: '0'
+              event_manager: '0'
+              press_manager_intern: '0'
+              curatorial_education: '0'
+              press: '0'
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        type:
+          id: type
+          table: timing_monitor_log
+          field: type
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: dblog_types
+          operator: in
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: type_op
+            label: Type
+            description: ''
+            use_operator: false
+            operator: type_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: type
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              blogger: '0'
+              content_strategist: '0'
+              marketing: '0'
+              editor: '0'
+              event_manager: '0'
+              press_manager_intern: '0'
+              curatorial_education: '0'
+              press: '0'
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
       style:
         type: table
         options:
@@ -696,6 +895,7 @@ display:
       max-age: -1
       contexts:
         - 'languages:language_interface'
+        - url
         - url.query_args
         - user.permissions
       tags: {  }
@@ -721,6 +921,7 @@ display:
       max-age: -1
       contexts:
         - 'languages:language_interface'
+        - url
         - url.query_args
         - user.permissions
       tags: {  }
