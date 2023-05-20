@@ -7,3 +7,9 @@ core_version_requirement: ^9 || ^10
 dependencies:
 
 configure: timing_monitor.settings
+
+
+# Information added by packaging script on 2023-05-19
+version: 1.0.0-alpha1
+project: external_site_monitor
+datestamp: 1684552926868
