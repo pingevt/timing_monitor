@@ -1,0 +1,4 @@
+row_limit: 100000
+dependencies:
+  module:
+    - timing_monitor

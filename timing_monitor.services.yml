@@ -1,0 +1,5 @@
+services:
+  timing_monitor.event_subscriber:
+    class: Drupal\timing_monitor\EventSubscriber\TimingMonitorSubscriber
+    tags:
+      - { name: event_subscriber }

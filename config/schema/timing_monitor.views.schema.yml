@@ -1,0 +1,17 @@
+# Schema for the views plugins of the Database Logging module.
+
+# views.field.api_logger_message:
+#   type: views_field
+#   label: 'Log event message'
+#   mapping:
+#     replace_variables:
+#       type: boolean
+#       label: 'Replace variables'
+
+# views.field.api_logger_operations:
+#   type: views_field
+#   label: 'Operation link markup'
+
+# views.filter.api_logger_types:
+#   type: 'views.filter.in_operator'
+#   label: 'Types'

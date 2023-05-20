@@ -1,0 +1,8 @@
+# Schema for the configuration files of the api_logger module.
+timing_monitor.settings:
+  type: config_object
+  label: 'Timing Monitor settings'
+  mapping:
+    row_limit:
+      type: integer
+      label: 'Timing Monitor messages to keep'

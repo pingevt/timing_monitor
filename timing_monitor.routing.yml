@@ -1,0 +1,7 @@
+timing_monitor.settings:
+  path: '/admin/config/development/timing-monitor'
+  defaults:
+    _form: '\Drupal\timing_monitor\Form\TimingMonitorSettings'
+    _title: 'Timing Monitor and errors'
+  requirements:
+    _permission: 'administer site configuration'

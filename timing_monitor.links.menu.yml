@@ -1,0 +1,6 @@
+timing_monitor.settings:
+  title: 'Timing Monitor Settings'
+  parent: system.admin_config_development
+  description: ''
+  route_name: timing_monitor.settings
+  weight: -13

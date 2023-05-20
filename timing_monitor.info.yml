@@ -1,0 +1,8 @@
+name: "Timing Monitor"
+type: module
+description: Add a timing monitor.
+package: Bluecadet
+version: '1.0.0'
+core_version_requirement: ^9 || ^10
+
+dependencies:
