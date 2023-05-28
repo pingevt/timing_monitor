@@ -5,6 +5,8 @@
  * Api logging module.
  */
 
+use Drupal\Core\File\FileSystemInterface;
+
 function timing_monitor_get_type():array {
   $connection = \Drupal::database();
 
@@ -25,28 +27,93 @@ function timing_monitor_get_type():array {
 /**
  * Implements hook_cron().
  *
- * Controls the size of the api log table, paring it to 'api_logger_row_limit' messages.
+ * Controls the size of the api log table, paring it to 'row_limit' messages.
  */
 function timing_monitor_cron() {
-  // Cleanup the watchdog table.
+  // Cleanup the timing_monitor_log table.
   $row_limit = \Drupal::config('timing_monitor.settings')->get('row_limit');
 
-  // For row limit n, get the wid of the nth row in descending wid order.
-  // Counting the most recent n rows avoids issues with wid number sequences,
+  // For row limit n, get the id of the nth row in descending id order.
+  // Counting the most recent n rows avoids issues with id number sequences,
   // e.g. auto_increment value > 1 or rows deleted directly from the table.
   if ($row_limit > 0) {
-    // $connection = \Drupal::database();
-    // $min_row = $connection->select('timing_monitor_log', 'l')
-    //   ->fields('l', ['id'])
-    //   ->orderBy('id', 'DESC')
-    //   ->range($row_limit - 1, 1)
-    //   ->execute()->fetchField();
+    $connection = \Drupal::database();
 
-    // Delete all table entries older than the nth row, if nth row was found.
-    // if ($min_row) {
-    //   $connection->delete('timing_monitor_log')
-    //     ->condition('id', $min_row, '<')
-    //     ->execute();
+    // Grab the last UUID - and archive those records.
+    $last_UUID = $connection->select('timing_monitor_log', 'l')
+      ->fields('l', ['session_uuid'])
+      ->orderBy('id', 'ASC')
+      ->range(($row_limit - 1) , 1)
+      ->execute()->fetchField();
+
+    // If no results, return;
+    if (!$last_UUID) {
+      return;
+    }
+
+    if (timing_monitor_archive_by_uuid($last_UUID)) {
+      // Delete All the entries with that UUID.
+      $connection->delete('timing_monitor_log')
+        ->condition('session_uuid', $last_UUID)
+        ->execute();
+    }
+    else {
+      // todo: throw error or log.
+    }
+  }
+}
+
+function timing_monitor_archive_by_uuid(string $uuid):bool {
+  $utility = \Drupal::service('timing_monitor.utility');
+  $connection = \Drupal::database();
+  $rows = $connection->select('timing_monitor_log', 'l')
+      ->fields('l', [])
+      ->condition('session_uuid', $uuid)
+      ->orderBy('id', 'ASC')
+      ->execute()->fetchAll();
+
+  if (!empty($rows)) {
+    $filesystem = \Drupal::service('file_system');
+    $dir = "public://" . \Drupal::config('timing_monitor.settings')->get('directory');
+
+    // Build out end of dir by date.
+    $date = new \DateTime();
+    $date->setTimestamp(current($rows)->timestamp);
+    $dir .= "/" . $date->format("Y/m/d");
+
+    if (!$filesystem->prepareDirectory($dir, FileSystemInterface::CREATE_DIRECTORY)) {
+      // todo: log or throw error.
+      return FALSE;
+    }
+
+    $rows_arrays = array_map(function($item) {
+      return (array) $item;
+    }, $rows);
+
+    $data_str = $utility->csvEscape(array_keys($rows_arrays[0])) . "\n";
+    foreach ($rows_arrays as $i => $r) {
+      $data_str .= $utility->csvEscape($r);
+
+      if ($i != (count($rows_arrays) - 1)) {
+        $data_str .= "\n";
+      }
+    }
+
+    $destination = $dir . "/" . $rows_arrays[0]['id'] . ".csv";
+
+    $r = $filesystem->saveData($data_str, $destination, FileSystemInterface::EXISTS_RENAME);
+
+    // Check for gzip.
+    // if (\Drupal::config('timing_monitor.settings')->get('gzip')) {
+      // ksm("gzip!");
+
+      // $realpath = $filesystem->realpath($r);
+      // ksm($realpath);
+
+      // gzcompressfile($realpath, 1);
+      // copy($realpath, 'compress.zlib://' . $realpath . ".gz");
     // }
   }
+
+  return TRUE;
 }

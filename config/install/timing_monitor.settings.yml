@@ -1,4 +1,6 @@
 row_limit: 100000
+directory: tm_logs
+gzip: 0
 dependencies:
   module:
     - timing_monitor

@@ -6,3 +6,9 @@ timing_monitor.settings:
     row_limit:
       type: integer
       label: 'Timing Monitor messages to keep'
+    directory:
+      type: string
+      label: 'The directory, relative to public, to save the log files.'
+    gzip:
+      type: bool
+      label: 'Whether or not to gzip the files.'
