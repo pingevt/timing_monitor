@@ -32,7 +32,6 @@ class TimingMonitorSubscriber implements EventSubscriberInterface {
 
   public function finishRequest(KernelEvent $event) {
     // ksm("Finish Request", $event);
-    // ksm(TimingMonitor::hasInstance());
 
     if (TimingMonitor::hasInstance()) {
       TimingMonitor::getInstance()->saveTimingLog();

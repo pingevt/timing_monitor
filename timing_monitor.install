@@ -64,14 +64,14 @@ function timing_monitor_schema() {
         'size' => 'big',
         'description' => 'Serialized array of variables that match the message string and that is passed into the t() function.',
       ],
-      'severity' => [
-        'type' => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-        'default' => 0,
-        'size' => 'tiny',
-        'description' => 'The severity level of the event; ranges from 0 (Emergency) to 7 (Debug)',
-      ],
+      // 'severity' => [
+      //   'type' => 'int',
+      //   'unsigned' => TRUE,
+      //   'not null' => TRUE,
+      //   'default' => 0,
+      //   'size' => 'tiny',
+      //   'description' => 'The severity level of the event; ranges from 0 (Emergency) to 7 (Debug)',
+      // ],
       'path' => [
         'type' => 'text',
         'not null' => FALSE,
@@ -139,7 +139,7 @@ function timing_monitor_schema() {
     'indexes' => [
       'type' => ['type'],
       'uid' => ['uid'],
-      'severity' => ['severity'],
+      // 'severity' => ['severity'],
     ],
   ];
 
@@ -167,4 +167,14 @@ function timing_monitor_update_9001() {
     'not null' => FALSE,
     'description' => 'Duration if we have a start',
   ]);
+}
+
+/**
+ * Remove unused fields to schema.
+ */
+function timing_monitor_update_9002() {
+  $schema = Drupal\Core\Database\Database::getConnection()->schema();
+
+  $schema->dropField('timing_monitor_log', 'severity');
+  $schema->dropIndex('timing_monitor_log', 'severity');
 }

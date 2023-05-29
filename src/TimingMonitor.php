@@ -2,8 +2,6 @@
 
 namespace Drupal\timing_monitor;
 
-use Drupal\Core\Logger\RfcLogLevel;
-
 /**
  * Add in Timing Monitor.
  */
@@ -42,7 +40,7 @@ class TimingMonitor {
       $uuid_service = \Drupal::service('uuid');
       self::$instance->uuid = $uuid_service->generate();
 
-      self::$instance->logTiming(RfcLogLevel::DEBUG, "timing_monitor", marker: "start", msg: "init", vars: []);
+      self::$instance->logTiming("timing_monitor", marker: "start", msg: "init", vars: []);
     }
 
     return self::$instance;
@@ -54,7 +52,7 @@ class TimingMonitor {
     }
   }
 
-  public function logTiming($severity, $type, $marker = "mark", $msg = "", $vars = []) {
+  public function logTiming($type, $marker = "mark", $msg = "", $vars = []) {
     $timer = microtime(true) - $this->startTime;
 
     // Set starts.
@@ -66,7 +64,6 @@ class TimingMonitor {
       'type' => $type,
       'marker' => $marker,
       'timer' => $timer,
-      'severity' => $severity,
       'msg' => $msg,
       'vars' => $vars,
       'timestamp' => time(),
@@ -75,7 +72,7 @@ class TimingMonitor {
 
   public function saveTimingLog() {
     // Finish timing.
-    $this->logTiming(RfcLogLevel::DEBUG, "timing_monitor", marker: "finish", msg: "finish", vars: []);
+    $this->logTiming("timing_monitor", marker: "finish", msg: "finish", vars: []);
 
     $request = \Drupal::request();
     $current_user_id = (int) \Drupal::currentUser()->id();
@@ -96,7 +93,6 @@ class TimingMonitor {
         'marker' => $log['marker'],
         'message' => $log['msg'],
         'variables' => serialize($log['vars']),
-        'severity' => $log['severity'],
         'path' => $request->getRequestUri(),
         'method' => $request->getMethod(),
         'timer' => $log['timer'],

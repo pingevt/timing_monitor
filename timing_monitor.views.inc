@@ -115,7 +115,7 @@ function timing_monitor_views_data() {
     ],
     'filter' => [
       'id' => 'in_operator',
-      'options callback' => 'timing_monitor_get_type',
+      'options callback' => 'timing_monitor_get_marker',
     ],
     'sort' => [
       'id' => 'standard',
@@ -157,21 +157,21 @@ function timing_monitor_views_data() {
     ],
   ];
 
-  $data['timing_monitor_log']['severity'] = [
-    'title' => t('Severity level'),
-    'help' => t('The severity level of the event; ranges from 0 (Emergency) to 7 (Debug).'),
-    'field' => [
-      'id' => 'machine_name',
-      'options callback' => 'Drupal\dblog\Controller\DbLogController::getLogLevelClassMap',
-    ],
-    'filter' => [
-      'id' => 'in_operator',
-      'options callback' => 'Drupal\Core\Logger\RfcLogLevel::getLevels',
-    ],
-    'sort' => [
-      'id' => 'standard',
-    ],
-  ];
+  // $data['timing_monitor_log']['severity'] = [
+  //   'title' => t('Severity level'),
+  //   'help' => t('The severity level of the event; ranges from 0 (Emergency) to 7 (Debug).'),
+  //   'field' => [
+  //     'id' => 'machine_name',
+  //     'options callback' => 'Drupal\dblog\Controller\DbLogController::getLogLevelClassMap',
+  //   ],
+  //   'filter' => [
+  //     'id' => 'in_operator',
+  //     'options callback' => 'Drupal\Core\Logger\RfcLogLevel::getLevels',
+  //   ],
+  //   'sort' => [
+  //     'id' => 'standard',
+  //   ],
+  // ];
 
   $data['timing_monitor_log']['path'] = [
     'title' => t('Path'),

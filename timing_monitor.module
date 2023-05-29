@@ -25,6 +25,27 @@ function timing_monitor_get_type():array {
 
   return $return;
 }
+function timing_monitor_get_marker():array {
+  // $connection = \Drupal::database();
+
+  // $query = $connection->select('timing_monitor_log', 'l');
+  // $query->fields('l', ['type']);
+  // $query->groupBy('type');
+
+  // $r = $query->execute()->fetchAll();
+
+  // $return = [];
+  // foreach($r as $r2) {
+  //   $return[$r2->type] = $r2->type;
+  // }
+
+  // return $return;
+  return [
+    'start' => "Start",
+    'mark' => "Mark",
+    'end' => "End",
+  ];
+}
 
 /**
  * Implements hook_cron().
