@@ -11,5 +11,5 @@ configure: timing_monitor.settings
 
 # Information added by packaging script on 2023-05-20
 version: 1.0.0-alpha2
-project: external_site_monitor
+project: timing_monitor
 datestamp: 1684592271006

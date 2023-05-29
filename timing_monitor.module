@@ -6,6 +6,8 @@
  */
 
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\update\UpdateManagerInterface;
+use Melbahja\Semver\Semver;
 
 function timing_monitor_get_type():array {
   $connection = \Drupal::database();
@@ -116,4 +118,129 @@ function timing_monitor_archive_by_uuid(string $uuid):bool {
   }
 
   return TRUE;
+}
+
+/**
+ * Implements hook_update_status_alter().
+ */
+function timing_monitor_update_status_alter(&$projects) {
+  $moduleHandler = \Drupal::service('module_handler');
+  $modules = [
+    'timing_monitor',
+  ];
+
+  foreach ($modules as $module_name) {
+    try {
+      if ($moduleHandler->moduleExists($module_name)) {
+
+        // Init vars.
+        $also = [];
+        $releases = [];
+        $lates_version = "";
+        $recomended = "";
+        $package_name = 'pingevt/' . $module_name;
+        $packagist_base = "https://packagist.org/packages/pingevt/" . $module_name;
+        $url = "https://repo.packagist.org/p2/pingevt/$module_name.json";
+
+        // Initiate curl and get info from Packagist.
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        $data = json_decode($result, TRUE);
+
+        try {
+
+          $exisiting_version = Semver::parse($projects[$module_name]['existing_version']);
+          $packages = $data['packages'][$package_name];
+          // Sort pakcages from packagist lowest to highest.
+          uasort($packages, 'timing_monitor__order_packages');
+
+          $projects[$module_name]['status'] = UpdateManagerInterface::CURRENT;
+
+          foreach ($packages as $package_data) {
+            try {
+              $release_version = Semver::parse($package_data['version']);
+              if ($exisiting_version->compare($release_version, "<")) {
+
+                // Create release data.
+                $release_data = [
+                  'name' => $projects[$module_name]['name'],
+                  'version' => $package_data['version'],
+                  'tag' => $package_data['version'],
+                  'status' => "published",
+                  'release_link' => $packagist_base . "#" . $package_data['version'],
+                  'download_link' => $packagist_base . "#" . $package_data['version'],
+                  'date' => strtotime($package_data['time']),
+                  'files' => "",
+                  'terms' => [],
+                  'security' => "",
+                ];
+
+                $releases[$package_data['version']] = $release_data;
+
+                // Is is also?
+                if ($exisiting_version->getMajor() < $release_version->getMajor()) {
+                  $projects[$module_name]['status'] = UpdateManagerInterface::NOT_CURRENT;
+                  $also[$release_version->getMajor() . "." . $release_version->getMinor()] = $package_data['version'];
+                }
+                elseif ($exisiting_version->getMajor() == $release_version->getMajor() && $exisiting_version->getMinor() < $release_version->getMinor()) {
+                  $also[$release_version->getMajor() . "." . $release_version->getMinor()] = $package_data['version'];
+                }
+
+                // Is it latest?
+                // Is it recommended?
+                if ($exisiting_version->getMajor() == $release_version->getMajor()) {
+                  $projects[$module_name]['latest_version'] = $package_data['version'];
+                  $projects[$module_name]['recommended'] = $package_data['version'];
+
+                  if ($exisiting_version != $release_version) {
+                    $projects[$module_name]['status'] = UpdateManagerInterface::NOT_CURRENT;
+                  }
+                }
+              }
+            }
+            catch (Exception $e) {
+              // phpcs:ignore
+              // \Drupal::messenger()->addWarning(t('Caught exception while checking release: %error', ['%error' => $e->getMessage()]));
+              \Drupal::logger('timing_monitor')->warning('Caught exception while checking release: ' . $e->getMessage());
+            }
+          }
+
+          // Update attributes.
+          $projects[$module_name]['link'] = $packagist_base;
+          $projects[$module_name]['title'] = $projects[$module_name]['info']['name'];
+
+          if (!empty($releases)) {
+            $projects[$module_name]['releases'] = $releases;
+          }
+          if (!empty($also)) {
+            $projects[$module_name]['also'] = $also;
+          }
+        }
+        catch (\Exception $e) {
+          // phpcs:ignore
+          // \Drupal::messenger()->addError(t('Caught exception while setting release data: %error', ['%error' => $e->getMessage()]));
+          \Drupal::logger('timing_monitor')->error('Caught exception while setting release data: ' . $e->getMessage());
+        }
+      }
+    }
+    catch (\Exception $e) {
+      // phpcs:ignore
+      // \Drupal::messenger()->addError(t('Caught exception while checking release data: %error', ['%error' => $e->getMessage()]));
+      \Drupal::logger('timing_monitor')->error('Caught exception while checking release data: ' . $e->getMessage());
+    }
+  }
+}
+
+/**
+ * Sort Packages array from Packagist.
+ */
+function timing_monitor__order_packages($a, $b) {
+  if (Semver::compare($a['version'], $b['version'])) {
+    return 0;
+  }
+  return Semver::compare($a['version'], $b['version'], '>') ? 1 : -1;
 }

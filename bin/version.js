@@ -8,7 +8,7 @@ const semver = require('semver');
 const { exec } = require("child_process");
 
 // Create new text.
-const project = "external_site_monitor";
+const project = "timing_monitor";
 const now = new Date();
 const version = argv._[0];
 
