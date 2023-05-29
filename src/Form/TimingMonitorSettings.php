@@ -54,7 +54,7 @@ class TimingMonitorSettings extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Compress archived files with gzip (EXPERIMENTAL)'),
       '#default_value' => $config->get('gzip'),
-      '#description' => $this->t(''),
+      '#description' => "",
     ];
 
     return parent::buildForm($form, $form_state);

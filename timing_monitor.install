@@ -5,6 +5,8 @@
  * Install, update and uninstall functions for the timing_monitor module.
  */
 
+use Drupal\Core\Database\Database;
+
 /**
  * Implements hook_schema().
  */
@@ -31,13 +33,6 @@ function timing_monitor_schema() {
         'default' => '',
         'description' => 'UUID for a unique session',
       ],
-      // 'keep' => [
-      //   'type' => 'int',
-      //   'unsigned' => TRUE,
-      //   'not null' => TRUE,
-      //   'default' => 0,
-      //   'description' => 'Whether or not to always keep this record.',
-      // ],
       'type' => [
         'type' => 'varchar_ascii',
         'length' => 64,
@@ -64,14 +59,6 @@ function timing_monitor_schema() {
         'size' => 'big',
         'description' => 'Serialized array of variables that match the message string and that is passed into the t() function.',
       ],
-      // 'severity' => [
-      //   'type' => 'int',
-      //   'unsigned' => TRUE,
-      //   'not null' => TRUE,
-      //   'default' => 0,
-      //   'size' => 'tiny',
-      //   'description' => 'The severity level of the event; ranges from 0 (Emergency) to 7 (Debug)',
-      // ],
       'path' => [
         'type' => 'text',
         'not null' => FALSE,
@@ -82,38 +69,6 @@ function timing_monitor_schema() {
         'not null' => FALSE,
         'description' => 'Method used for the call.',
       ],
-      // 'query_string' => [
-      //   'type' => 'text',
-      //   'not null' => FALSE,
-      //   'description' => 'The called query string.',
-      // ],
-      // 'request_params' => [
-      //   'type' => 'text',
-      //   'not null' => TRUE,
-      //   'description' => 'The called request params.',
-      // ],
-      // 'link' => [
-      //   'type' => 'text',
-      //   'not null' => TRUE,
-      //   'description' => 'Link to view the result of the event.',
-      // ],
-      // 'location'  => [
-      //   'type' => 'text',
-      //   'not null' => TRUE,
-      //   'description' => 'URL of the origin of the event.',
-      // ],
-      // 'referer' => [
-      //   'type' => 'text',
-      //   'not null' => FALSE,
-      //   'description' => 'URL of referring page.',
-      // ],
-      // 'hostname' => [
-      //   'type' => 'varchar_ascii',
-      //   'length' => 128,
-      //   'not null' => TRUE,
-      //   'default' => '',
-      //   'description' => 'Hostname of the user who triggered the event.',
-      // ],
       'timer' => [
         'type' => 'float',
         'unsigned' => TRUE,
@@ -139,7 +94,6 @@ function timing_monitor_schema() {
     'indexes' => [
       'type' => ['type'],
       'uid' => ['uid'],
-      // 'severity' => ['severity'],
     ],
   ];
 
@@ -150,7 +104,7 @@ function timing_monitor_schema() {
  * Add fields to schema.
  */
 function timing_monitor_update_9001() {
-  $schema = Drupal\Core\Database\Database::getConnection()->schema();
+  $schema = Database::getConnection()->schema();
 
   $schema->addField('timing_monitor_log', 'marker', [
     'type' => 'varchar_ascii',
@@ -173,7 +127,7 @@ function timing_monitor_update_9001() {
  * Remove unused fields to schema.
  */
 function timing_monitor_update_9002() {
-  $schema = Drupal\Core\Database\Database::getConnection()->schema();
+  $schema = Database::getConnection()->schema();
 
   $schema->dropField('timing_monitor_log', 'severity');
   $schema->dropIndex('timing_monitor_log', 'severity');

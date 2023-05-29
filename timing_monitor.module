@@ -9,6 +9,11 @@ use Drupal\Core\File\FileSystemInterface;
 use Drupal\update\UpdateManagerInterface;
 use Melbahja\Semver\Semver;
 
+/**
+ * Callback for available field values.
+ *
+ * This is used for views fitler.
+ */
 function timing_monitor_get_type():array {
   $connection = \Drupal::database();
 
@@ -19,27 +24,19 @@ function timing_monitor_get_type():array {
   $r = $query->execute()->fetchAll();
 
   $return = [];
-  foreach($r as $r2) {
+  foreach ($r as $r2) {
     $return[$r2->type] = $r2->type;
   }
 
   return $return;
 }
+
+/**
+ * Callback for available field values.
+ *
+ * This is used for views fitler.
+ */
 function timing_monitor_get_marker():array {
-  // $connection = \Drupal::database();
-
-  // $query = $connection->select('timing_monitor_log', 'l');
-  // $query->fields('l', ['type']);
-  // $query->groupBy('type');
-
-  // $r = $query->execute()->fetchAll();
-
-  // $return = [];
-  // foreach($r as $r2) {
-  //   $return[$r2->type] = $r2->type;
-  // }
-
-  // return $return;
   return [
     'start' => "Start",
     'mark' => "Mark",
@@ -66,10 +63,10 @@ function timing_monitor_cron() {
     $last_UUID = $connection->select('timing_monitor_log', 'l')
       ->fields('l', ['session_uuid'])
       ->orderBy('id', 'ASC')
-      ->range(($row_limit - 1) , 1)
+      ->range(($row_limit - 1), 1)
       ->execute()->fetchField();
 
-    // If no results, return;
+    // If no results, return.
     if (!$last_UUID) {
       return;
     }
@@ -81,19 +78,22 @@ function timing_monitor_cron() {
         ->execute();
     }
     else {
-      // todo: throw error or log.
+      // @todo Throw error or log.
     }
   }
 }
 
+/**
+ * Archive to file timing records by their UUID.
+ */
 function timing_monitor_archive_by_uuid(string $uuid):bool {
   $utility = \Drupal::service('timing_monitor.utility');
   $connection = \Drupal::database();
   $rows = $connection->select('timing_monitor_log', 'l')
-      ->fields('l', [])
-      ->condition('session_uuid', $uuid)
-      ->orderBy('id', 'ASC')
-      ->execute()->fetchAll();
+    ->fields('l', [])
+    ->condition('session_uuid', $uuid)
+    ->orderBy('id', 'ASC')
+    ->execute()->fetchAll();
 
   if (!empty($rows)) {
     $filesystem = \Drupal::service('file_system');
@@ -105,11 +105,11 @@ function timing_monitor_archive_by_uuid(string $uuid):bool {
     $dir .= "/" . $date->format("Y/m/d");
 
     if (!$filesystem->prepareDirectory($dir, FileSystemInterface::CREATE_DIRECTORY)) {
-      // todo: log or throw error.
+      // @todo Log or throw error.
       return FALSE;
     }
 
-    $rows_arrays = array_map(function($item) {
+    $rows_arrays = array_map(function ($item) {
       return (array) $item;
     }, $rows);
 
@@ -127,6 +127,8 @@ function timing_monitor_archive_by_uuid(string $uuid):bool {
     $r = $filesystem->saveData($data_str, $destination, FileSystemInterface::EXISTS_RENAME);
 
     // Check for gzip.
+    // phpcs:disable
+    // @todo: WIP.
     // if (\Drupal::config('timing_monitor.settings')->get('gzip')) {
       // ksm("gzip!");
 
@@ -136,6 +138,7 @@ function timing_monitor_archive_by_uuid(string $uuid):bool {
       // gzcompressfile($realpath, 1);
       // copy($realpath, 'compress.zlib://' . $realpath . ".gz");
     // }
+    // phpcs:enable
   }
 
   return TRUE;
@@ -157,8 +160,6 @@ function timing_monitor_update_status_alter(&$projects) {
         // Init vars.
         $also = [];
         $releases = [];
-        $lates_version = "";
-        $recomended = "";
         $package_name = 'pingevt/' . $module_name;
         $packagist_base = "https://packagist.org/packages/pingevt/" . $module_name;
         $url = "https://repo.packagist.org/p2/pingevt/$module_name.json";

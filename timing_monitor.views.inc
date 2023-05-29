@@ -72,20 +72,6 @@ function timing_monitor_views_data() {
     ],
   ];
 
-  // $data['timing_monitor_log']['keep'] = [
-  //   'title' => t('Keep'),
-  //   'help' => t('Whether or not to always keep this record.'),
-  //   'field' => [
-  //     'id' => 'boolean',
-  //   ],
-  //   'filter' => [
-  //     'id' => 'boolean',
-  //   ],
-  //   'argument' => [
-  //     'id' => 'boolean',
-  //   ],
-  // ];
-
   $data['timing_monitor_log']['type'] = [
     'title' => t('Type'),
     'help' => t('The type of the log entry, for example "user" or "page not found".'),
@@ -157,22 +143,6 @@ function timing_monitor_views_data() {
     ],
   ];
 
-  // $data['timing_monitor_log']['severity'] = [
-  //   'title' => t('Severity level'),
-  //   'help' => t('The severity level of the event; ranges from 0 (Emergency) to 7 (Debug).'),
-  //   'field' => [
-  //     'id' => 'machine_name',
-  //     'options callback' => 'Drupal\dblog\Controller\DbLogController::getLogLevelClassMap',
-  //   ],
-  //   'filter' => [
-  //     'id' => 'in_operator',
-  //     'options callback' => 'Drupal\Core\Logger\RfcLogLevel::getLevels',
-  //   ],
-  //   'sort' => [
-  //     'id' => 'standard',
-  //   ],
-  // ];
-
   $data['timing_monitor_log']['path'] = [
     'title' => t('Path'),
     'help' => t('API path'),
@@ -206,108 +176,6 @@ function timing_monitor_views_data() {
       'id' => 'standard',
     ],
   ];
-
-  // $data['timing_monitor_log']['query_string'] = [
-  //   'title' => t('Query String'),
-  //   'help' => t('The called query string.'),
-  //   'field' => [
-  //     'id' => 'standard',
-  //   ],
-  //   'argument' => [
-  //     'id' => 'string',
-  //   ],
-  //   'filter' => [
-  //     'id' => 'string',
-  //   ],
-  //   'sort' => [
-  //     'id' => 'standard',
-  //   ],
-  // ];
-
-  // $data['timing_monitor_log']['request_params'] = [
-  //   'title' => t('Request Params'),
-  //   'help' => t('The called request params.'),
-  //   'field' => [
-  //     'id' => 'standard',
-  //   ],
-  //   'argument' => [
-  //     'id' => 'string',
-  //   ],
-  //   'filter' => [
-  //     'id' => 'string',
-  //   ],
-  //   'sort' => [
-  //     'id' => 'standard',
-  //   ],
-  // ];
-
-  // $data['timing_monitor_log']['link'] = [
-  //   'title' => t('Operations'),
-  //   'help' => t('Operation links for the event.'),
-  //   'field' => [
-  //     'id' => 'dblog_operations',
-  //   ],
-  //   'argument' => [
-  //     'id' => 'string',
-  //   ],
-  //   'filter' => [
-  //     'id' => 'string',
-  //   ],
-  //   'sort' => [
-  //     'id' => 'standard',
-  //   ],
-  // ];
-
-  // $data['timing_monitor_log']['location'] = [
-  //   'title' => t('Location'),
-  //   'help' => t('URL of the origin of the event.'),
-  //   'field' => [
-  //     'id' => 'standard',
-  //   ],
-  //   'argument' => [
-  //     'id' => 'string',
-  //   ],
-  //   'filter' => [
-  //     'id' => 'string',
-  //   ],
-  //   'sort' => [
-  //     'id' => 'standard',
-  //   ],
-  // ];
-
-  // $data['timing_monitor_log']['referer'] = [
-  //   'title' => t('Referer'),
-  //   'help' => t('URL of the previous page.'),
-  //   'field' => [
-  //     'id' => 'standard',
-  //   ],
-  //   'argument' => [
-  //     'id' => 'string',
-  //   ],
-  //   'filter' => [
-  //     'id' => 'string',
-  //   ],
-  //   'sort' => [
-  //     'id' => 'standard',
-  //   ],
-  // ];
-
-  // $data['timing_monitor_log']['hostname'] = [
-  //   'title' => t('Hostname'),
-  //   'help' => t('Hostname of the user who triggered the event.'),
-  //   'field' => [
-  //     'id' => 'standard',
-  //   ],
-  //   'argument' => [
-  //     'id' => 'string',
-  //   ],
-  //   'filter' => [
-  //     'id' => 'string',
-  //   ],
-  //   'sort' => [
-  //     'id' => 'standard',
-  //   ],
-  // ];
 
   $data['timing_monitor_log']['timer'] = [
     'title' => t('Timer'),

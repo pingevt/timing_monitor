@@ -10,7 +10,7 @@ class TimingMonitorUtility {
   /**
    * Craete a csv safe test string.
    */
-  function csvEscape(array $data, $delimiter = ',') {
+  public function csvEscape(array $data, $delimiter = ',') {
     $buffer = fopen('php://temp', 'r+');
     fputcsv($buffer, $data, $delimiter);
     rewind($buffer);
