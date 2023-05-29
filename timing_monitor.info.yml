@@ -10,6 +10,6 @@ configure: timing_monitor.settings
 
 
 # Information added by packaging script on 2023-05-29
-version: 1.0.0-alpha5
+version: 1.0.0-alpha6
 project: timing_monitor
-datestamp: 1685389205193
+datestamp: 1685393185732
