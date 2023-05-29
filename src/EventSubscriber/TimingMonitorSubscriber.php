@@ -4,6 +4,7 @@ namespace Drupal\timing_monitor\EventSubscriber;
 
 use Drupal\timing_monitor\TimingMonitor;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\KernelEvent;
 
 /**
  * Add in Timing Monitor.
@@ -23,7 +24,7 @@ class TimingMonitorSubscriber implements EventSubscriberInterface {
   /**
    * Event callback for 'kernel.request' event.
    *
-   * @param KernelEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\KernelEvent $event
    * @return void
    */
   // public function onRequest(KernelEvent $event) {
@@ -34,7 +35,7 @@ class TimingMonitorSubscriber implements EventSubscriberInterface {
   /**
    * Event callback for 'kernel.finish_request' event.
    *
-   * @param KernelEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\KernelEvent $event
    *   The Kernel event.
    */
   public function finishRequest(KernelEvent $event) {

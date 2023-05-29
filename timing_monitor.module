@@ -40,7 +40,7 @@ function timing_monitor_get_marker():array {
   return [
     'start' => "Start",
     'mark' => "Mark",
-    'end' => "End",
+    'finish' => "Finish",
   ];
 }
 

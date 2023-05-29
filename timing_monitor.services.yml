@@ -5,3 +5,7 @@ services:
       - { name: event_subscriber }
   timing_monitor.utility:
     class: Drupal\timing_monitor\TimingMonitorUtility
+  timing_monitor.twig.extension:
+    class: Drupal\timing_monitor\TwigExtension\TimingMonitorExtension
+    tags:
+      - { name: twig.extension }
