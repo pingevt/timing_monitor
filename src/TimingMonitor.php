@@ -175,7 +175,8 @@ class TimingMonitor {
       $insert->execute();
     }
     catch (\Exception $e) {
-      throw $e;
+      \Drupal::logger('timing_monitor')->error($e->getMessage() . "\r\n\r\n" . print_r($data, TRUE));
+      // throw $e;
     }
   }
 
