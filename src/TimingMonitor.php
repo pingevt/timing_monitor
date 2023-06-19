@@ -72,7 +72,19 @@ class TimingMonitor {
       $uuid_service = \Drupal::service('uuid');
       self::$instance->uuid = $uuid_service->generate();
 
-      self::$instance->logTiming("timing_monitor", marker: "start", msg: "init", vars: []);
+      // self::$instance->logTiming("timing_monitor", marker: "start", msg: "init", vars: []);
+      // Initialise at 0.
+      self::$instance->monLog[] = [
+        'type' => "timing_monitor",
+        'marker' => "start",
+        'timer' => 0,
+        'msg' => "init timing_monitor",
+        'duration' => NULL,
+        'vars' => [],
+        'timestamp' => time(),
+      ];
+
+      self::$instance->starts["timing_monitor"] = 0;
     }
 
     return self::$instance;
@@ -103,14 +115,22 @@ class TimingMonitor {
     $timer = microtime(TRUE) - $this->startTime;
 
     // Set starts.
+    // Will overwrite if already exists, regardless if one ever finishes.
     if ($marker == "start") {
       $this->starts[$type] = $timer;
+    }
+
+    // Calculate duration.
+    $duration = NULL;
+    if (($marker == "mark" || $marker == "finish") && isset($this->starts[$type])) {
+      $duration = $timer - $this->starts[$type];
     }
 
     $this->monLog[] = [
       'type' => $type,
       'marker' => $marker,
       'timer' => $timer,
+      'duration' => $duration,
       'msg' => $msg,
       'vars' => $vars,
       'timestamp' => time(),
@@ -131,12 +151,6 @@ class TimingMonitor {
     $data = [];
 
     foreach ($this->monLog as $log) {
-      // Calculate duration.
-      $duration = NULL;
-      if (($log['marker'] == "mark" || $log['marker'] == "finish") && isset($this->starts[$log['type']])) {
-        $duration = $log['timer'] - $this->starts[$log['type']];
-      }
-
       $data[] = [
         'uid' => $current_user_id,
         'session_uuid' => $this->uuid,
@@ -147,7 +161,7 @@ class TimingMonitor {
         'path' => $request->getRequestUri(),
         'method' => $request->getMethod(),
         'timer' => $log['timer'],
-        'duration' => $duration,
+        'duration' => $log['duration'],
         'timestamp' => $log['timestamp'],
       ];
     }
