@@ -62,7 +62,7 @@ function timing_monitor_cron() {
     // Grab the last UUID - and archive those records.
     $last_UUID = $connection->select('timing_monitor_log', 'l')
       ->fields('l', ['session_uuid'])
-      ->orderBy('id', 'ASC')
+      ->orderBy('id', 'DESC')
       ->range(($row_limit - 1), 1)
       ->execute()->fetchField();
 
