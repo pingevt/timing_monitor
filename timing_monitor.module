@@ -59,26 +59,30 @@ function timing_monitor_cron() {
   if ($row_limit > 0) {
     $connection = \Drupal::database();
 
-    // Grab the last UUID - and archive those records.
-    $last_UUID = $connection->select('timing_monitor_log', 'l')
-      ->fields('l', ['session_uuid'])
-      ->orderBy('id', 'DESC')
-      ->range(($row_limit - 1), 1)
-      ->execute()->fetchField();
+    // Loop through 25 reports if we can.
+    for ($i = 0; $i < 25; $i++) {
 
-    // If no results, return.
-    if (!$last_UUID) {
-      return;
-    }
+      // Grab the last UUID - and archive those records.
+      $last_UUID = $connection->select('timing_monitor_log', 'l')
+        ->fields('l', ['session_uuid'])
+        ->orderBy('id', 'DESC')
+        ->range(($row_limit - 1), 1)
+        ->execute()->fetchField();
 
-    if (timing_monitor_archive_by_uuid($last_UUID)) {
-      // Delete All the entries with that UUID.
-      $connection->delete('timing_monitor_log')
-        ->condition('session_uuid', $last_UUID)
-        ->execute();
-    }
-    else {
-      // @todo Throw error or log.
+      // If no results, return.
+      if (!$last_UUID) {
+        return;
+      }
+
+      if (timing_monitor_archive_by_uuid($last_UUID)) {
+        // Delete All the entries with that UUID.
+        $connection->delete('timing_monitor_log')
+          ->condition('session_uuid', $last_UUID)
+          ->execute();
+      }
+      else {
+        // @todo Throw error or log.
+      }
     }
   }
 }
