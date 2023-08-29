@@ -165,7 +165,9 @@ class TimingMonitor {
         'timestamp' => $log['timestamp'],
       ];
     }
-    if (!empty($data)) {
+    // Check that it is not empty and also there are more than 2 records.
+    // Don't log initi and end only.
+    if (!empty($data) && count($data) > 2) {
       $this->saveLogToDb($data);
     }
   }
