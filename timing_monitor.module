@@ -19,6 +19,8 @@ function timing_monitor_get_type():array {
 
   $query = $connection->select('timing_monitor_log', 'l');
   $query->fields('l', ['type']);
+  $query->orderBy('id', 'DESC');
+  $query->range(0, 10000);
   $query->groupBy('type');
 
   $r = $query->execute()->fetchAll();
