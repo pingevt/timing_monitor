@@ -11,7 +11,16 @@ use Drupal\Core\Database\Database;
  * Implements hook_schema().
  */
 function timing_monitor_schema() {
-  $schema['timing_monitor_log'] = [
+  $schema['timing_monitor_log'] = timing_monitor__timing_monitor_log_spec();
+
+  return $schema;
+}
+
+/**
+ * Spec for timing_monitor_log.
+ */
+function timing_monitor__timing_monitor_log_spec() {
+  return [
     'description' => 'Table that contains logs of api events.',
     'fields' => [
       'id' => [
@@ -94,10 +103,9 @@ function timing_monitor_schema() {
     'indexes' => [
       'type' => ['type'],
       'uid' => ['uid'],
+      'uuid' => ['session_uuid'],
     ],
   ];
-
-  return $schema;
 }
 
 /**
@@ -131,4 +139,15 @@ function timing_monitor_update_9002() {
 
   $schema->dropField('timing_monitor_log', 'severity');
   $schema->dropIndex('timing_monitor_log', 'severity');
+}
+
+/**
+ * Update index on timing_monitor_log.
+ */
+function timing_monitor_update_9003() {
+  $schema = Database::getConnection()->schema();
+
+  $spec = timing_monitor__timing_monitor_log_spec();
+
+  $schema->addIndex('timing_monitor_log', 'uuid', ['session_uuid'], $spec);
 }
