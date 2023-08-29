@@ -72,7 +72,6 @@ class TimingMonitor {
       $uuid_service = \Drupal::service('uuid');
       self::$instance->uuid = $uuid_service->generate();
 
-      // self::$instance->logTiming("timing_monitor", marker: "start", msg: "init", vars: []);
       // Initialise at 0.
       self::$instance->monLog[] = [
         'type' => "timing_monitor",

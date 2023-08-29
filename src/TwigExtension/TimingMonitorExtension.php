@@ -26,7 +26,10 @@ class TimingMonitorExtension extends AbstractExtension {
    */
   public function getFunctions() {
     return [
-      'timingMonitorLogTiming' => new TwigFunction('timingMonitorLogTiming', ['Drupal\timing_monitor\TwigExtension\TimingMonitorExtension', 'logTiming']),
+      'timingMonitorLogTiming' => new TwigFunction('timingMonitorLogTiming', [
+        'Drupal\timing_monitor\TwigExtension\TimingMonitorExtension',
+        'logTiming',
+      ]),
     ];
   }
 
