@@ -61,6 +61,8 @@ function timing_monitor_cron() {
   if ($row_limit > 0) {
     $connection = \Drupal::database();
 
+    $start = microtime(TRUE);
+
     // Loop through 25 reports if we can.
     for ($i = 0; $i < 25; $i++) {
 
@@ -84,6 +86,13 @@ function timing_monitor_cron() {
       }
       else {
         // @todo Throw error or log.
+      }
+
+      // Check timing as well. Do not exceed 30 seconds.
+      if (microtime(TRUE) - $start >= 30) {
+        \Drupal::logger('timing_monitor')->notice('Stopping after %count iterations', ['%count' => ($i + 1)]);
+
+        $i = 999;
       }
     }
   }
