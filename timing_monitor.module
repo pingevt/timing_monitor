@@ -59,43 +59,50 @@ function timing_monitor_cron() {
   // Counting the most recent n rows avoids issues with id number sequences,
   // e.g. auto_increment value > 1 or rows deleted directly from the table.
   if ($row_limit > 0) {
-    $connection = \Drupal::database();
-
     $start = microtime(TRUE);
 
     // Loop through 25 reports if we can.
     for ($i = 0; $i < 25; $i++) {
 
-      // Grab the last UUID - and archive those records.
-      $last_UUID = $connection->select('timing_monitor_log', 'l')
-        ->fields('l', ['session_uuid'])
-        ->orderBy('id', 'DESC')
-        ->range(($row_limit - 1), 1)
-        ->execute()->fetchField();
-
-      // If no results, return.
-      if (!$last_UUID) {
-        return;
-      }
-
-      if (timing_monitor_archive_by_uuid($last_UUID)) {
-        // Delete All the entries with that UUID.
-        $connection->delete('timing_monitor_log')
-          ->condition('session_uuid', $last_UUID)
-          ->execute();
-      }
-      else {
-        // @todo Throw error or log.
-      }
+      timing_monitor_archive_single_session($row_limit);
+      $c = $i;
 
       // Check timing as well. Do not exceed 30 seconds.
       if (microtime(TRUE) - $start >= 30) {
-        \Drupal::logger('timing_monitor')->notice('Stopping after %count iterations', ['%count' => ($i + 1)]);
-
         $i = 999;
       }
     }
+    \Drupal::logger('timing_monitor')->notice('Stopping after %count iterations', ['%count' => ($c + 1)]);
   }
+}
+
+function timing_monitor_archive_single_session(int $row_limit = 1000) {
+
+  $connection = \Drupal::database();
+
+  // Grab the last UUID - and archive those records.
+  $last_UUID = $connection->select('timing_monitor_log', 'l')
+    ->fields('l', ['session_uuid'])
+    ->orderBy('id', 'DESC')
+    ->range(($row_limit - 1), 1)
+    ->execute()->fetchField();
+
+  // If no results, return.
+  if (!$last_UUID) {
+    return;
+  }
+
+  if (timing_monitor_archive_by_uuid($last_UUID)) {
+    // Delete All the entries with that UUID.
+    $delete_count = $connection->delete('timing_monitor_log')
+      ->condition('session_uuid', $last_UUID)
+      ->execute();
+  }
+  else {
+    // @todo Throw error or log.
+  }
+
+  return $last_UUID;
 }
 
 /**
@@ -280,4 +287,47 @@ function timing_monitor__order_packages($a, $b) {
     return 0;
   }
   return Semver::compare($a['version'], $b['version'], '>') ? 1 : -1;
+}
+
+function timing_monitor__archiving($count, $row_limit, &$context) {
+  if (empty($context['sandbox'])) {
+    $context['sandbox']['progress'] = 0;
+    $context['sandbox']['max'] = $count;
+  }
+
+  $uuid = timing_monitor_archive_single_session($row_limit);
+  $context['results'][] = $uuid;
+  $context['message'] = "Archiving " . $context['sandbox']['progress'] . " of " . $context['sandbox']['max'] . " sessions.";
+
+  $context['sandbox']['progress']++;
+
+  if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+    $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
+  }
+}
+
+function timing_monitor__archiving_finished($success, $results, $operations, $elapsed) {
+  if ($success) {
+    $message = \Drupal::translation()->formatPlural(count($results), 'One session processed.', '@count sessions processed.');
+  }
+  else {
+    $message = t('Finished with an error.');
+  }
+  \Drupal::messenger()->addMessage($message);
+
+  // foreach ($results as $result) {
+  //   $items[] = t('Archived %title.', array(
+  //     '%title' => $result,
+  //   ));
+  // }
+  // $message_render = [
+  //   '#theme' => 'item_list',
+  //   '#items' => $items,
+  // ];
+
+  // \Drupal::messenger()->addMessage(render($message_render));
+
+  if (!$success) {
+    \Drupal::messenger()->addError(t('Finished with an error.'));
+  }
 }

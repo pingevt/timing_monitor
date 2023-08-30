@@ -1,0 +1,9 @@
+timing_monitor.settings:
+  route_name: timing_monitor.settings
+  title: 'Settings'
+  base_route: timing_monitor.settings
+
+timing_monitor.archive:
+  route_name: timing_monitor.archive
+  title: 'Archive Logs'
+  base_route: timing_monitor.settings
