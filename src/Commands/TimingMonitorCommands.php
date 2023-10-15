@@ -122,7 +122,7 @@ class TimingMonitorCommands extends DrushCommands {
     'page' => 0,
     'count' => 50,
     'sort' => 'DESC',
-    'format' => 'table'
+    'format' => 'table',
   ]) {
 
     // Check for type param.
