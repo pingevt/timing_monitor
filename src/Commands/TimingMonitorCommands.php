@@ -89,7 +89,7 @@ class TimingMonitorCommands extends DrushCommands {
   /**
    * Retrieves a list of logs for the given type.
    *
-   * @param type
+   * @param string type
    *   The log type to list
    *
    * @option page
