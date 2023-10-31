@@ -12,3 +12,6 @@ timing_monitor.settings:
     gzip:
       type: bool
       label: 'Whether or not to gzip the files.'
+    api:
+      type: bool
+      label: 'Enable api access to timing data.'

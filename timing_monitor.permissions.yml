@@ -1,3 +1,6 @@
 'view timing log':
   title: "View Timing Log"
   description: "View Timing Log"
+'use timing log api':
+  title: "Use Timing Log Api"
+  description: "Use Timing Log Api"
