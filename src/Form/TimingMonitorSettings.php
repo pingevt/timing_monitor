@@ -57,6 +57,13 @@ class TimingMonitorSettings extends ConfigFormBase {
       '#description' => "",
     ];
 
+    $form['api'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable API'),
+      '#default_value' => $config->get('api'),
+      '#description' => "Enable api access to timing data",
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -85,6 +92,7 @@ class TimingMonitorSettings extends ConfigFormBase {
       ->set('row_limit', $form_state->getValue('row_limit'))
       ->set('directory', $form_state->getValue('directory'))
       ->set('gzip', $form_state->getValue('gzip'))
+      ->set('api', $form_state->getValue('api'))
       ->save();
 
     parent::submitForm($form, $form_state);

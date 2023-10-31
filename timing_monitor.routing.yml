@@ -14,3 +14,5 @@ timing_monitor.archive:
   requirements:
     _permission: 'administer site configuration'
 
+route_callbacks:
+  - '\Drupal\timing_monitor\Routing\Routes::routes'
