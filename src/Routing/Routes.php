@@ -64,6 +64,13 @@ class Routes implements ContainerInjectionInterface {
         ]
       );
 
+      // Type list.
+      $routes['timing_monito.api.type.list'] = new Route(
+        '/api/timing-monitor/{type}/list',
+        [
+          '_controller' => '\Drupal\timing_monitor\Controller\Api::typeList',
+        ]
+      );
 
       // Auth options.
       // @todo setup settings and options for Authorization.
