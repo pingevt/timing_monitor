@@ -28,8 +28,19 @@ INSTALLATION
 CONFIGURATION
 -------------
 
-Configuration can be found at:
+Configuration can be found at: /admin/config/development/timing-monitor
 
+USAGE
+-----
+
+```php
+$tm = TimingMonitor::getInstance();
+
+$tm->logTiming("preprocess_node:$bundle:" . $variables['view_mode'], TimingMonitor::START, "Starting...");
+$tm->logTiming("preprocess_node:$bundle:" . $variables['view_mode'], TimingMonitor::MARK, "...Mark...");
+$tm->logTiming("preprocess_node:$bundle:" . $variables['view_mode'], TimingMonitor::FINISH, "...Finishing");
+
+``````
 
 MAINTAINERS
 -----------
