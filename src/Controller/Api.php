@@ -76,4 +76,23 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
     return $response;
   }
 
+  public function typeList(string $type, Request $request): CacheableJsonResponse | array {
+
+    $data = [
+      "status" => "OK",
+      "data" => [],
+    ];
+
+    $select = $this->database->select('timing_monitor_log', 'tm')->fields('tm', []);
+
+    $select->condition('type', $type);
+    $select->orderBy('id', 'DESC');
+    $select->range(0, 50);
+
+    $data['data'] = $select->execute()->fetchAll(\PDO::FETCH_ASSOC);
+
+    $response = new CacheableJsonResponse($data);
+    return $response;
+  }
+
 }
