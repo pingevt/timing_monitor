@@ -37,6 +37,9 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
     );
   }
 
+  /**
+   * Callback for timing monitor status.
+   */
   public function status(Request $request): CacheableJsonResponse {
 
     $data = [
@@ -57,6 +60,9 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
     return $response;
   }
 
+  /**
+   * Callback for timing monitor types.
+   */
   public function types(Request $request): CacheableJsonResponse {
 
     $data = [
@@ -68,7 +74,7 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
     $select->addExpression('COUNT(*)', 'c');
     $results = $select->groupBy('type')->execute()->fetchAll();
 
-    foreach($results as $r) {
+    foreach ($results as $r) {
       $data['data'][$r->type] = ['id' => $r->type, 'count' => $r->c];
     }
 
@@ -76,7 +82,10 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
     return $response;
   }
 
-  public function typeList(string $type, Request $request): CacheableJsonResponse | array {
+  /**
+   * Callback for a list of logs for a specific type.
+   */
+  public function typeList(string $type, Request $request): CacheableJsonResponse {
 
     $data = [
       "status" => "OK",
