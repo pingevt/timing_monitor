@@ -82,17 +82,12 @@ class Routes implements ContainerInjectionInterface {
 
       // Auth options.
       // @todo setup settings and options for Authorization.
-      // ksm($routes);
-
       foreach ($routes as $route => $r_data) {
         $r_data->setMethods(['GET']);
         $r_data->setRequirement('_permission', 'use timing log api');
         $route_collection->add($route, $r_data);
       }
-
-      ksm($route_collection);
     }
-
 
     return $route_collection;
   }

@@ -110,6 +110,7 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
    */
   public function dailyAverage(string $type, Request $request): CacheableJsonResponse | array {
 
+    // Initialize return data.
     $data = [
       "status" => "OK",
       "data" => [
@@ -118,11 +119,7 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
       ],
     ];
 
-    // ksm($type);
-
-    // ksm($request->get('startDate'));
-    // ksm($request->get('endDate'));
-
+    // @todo validate or filter $type.
     $type_match = (strpos($type, "%") !== FALSE) ? "LIKE" : "=";
     $today = new \DateTime();
     $today->setTime(23, 59, 59);
@@ -132,24 +129,14 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
     $end_date_obj->setTime(0, 0, 0);
     $end_day = $request->get('endDate') ?? $end_date_obj->format('Y-m-d');
 
-    // ksm($start_day, $end_day, $today, $end_date_obj);
+    // @todo setup caching.
 
+    // Fill out the return data arrray.
     for ($i = 0; $i < $days; $i++) {
       $dates[(clone $today)->modify("-$i days")->format('Y-m-d')] = NULL;
     }
 
-
-
-
-    $select = $this->database->select('timing_monitor_log', 'tm')->fields('tm', []);
-    // ksm($this->database, $select);
-    // $select->addExpression("DATE_FORMAT(FROM_UNIXTIME(timestamp), :format)", 'date', [":format" => "%Y%m%d"]);
-    // $select->condition('type', $type);
-    // $select->condition('marker', TimingMonitor::FINISH);
-    // $select->groupBy('type', 'timestamp', 'd');
-    // $select->orderBy('id', 'DESC');
-    // $select->range(0, 50);
-    // $results = $select->execute()->fetchAll(\PDO::FETCH_ASSOC);
+    // $select = $this->database->select('timing_monitor_log', 'tm')->fields('tm', []);
 
     $query = $this->database->query('
       SELECT t.date, AVG(duration) avg
@@ -169,20 +156,18 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
       ":start_date" => $today->format("U"),
       ":end_date" => $end_date_obj->format("U"),
     ]);
-    // ksm($query, $query->getQueryString());
-    // ksm($query->arguments());
-    $results = $query->fetchAll(\PDO::FETCH_ASSOC);
-    // ksm($results);
 
+    // Get results in an array of arrays.
+    $results = $query->fetchAll(\PDO::FETCH_ASSOC);
+
+    // Fill out return data.
     foreach ($results as $result) {
       $dates[$result['date']] = (float) $result['avg'];
     }
 
     $data['data']['dates'] = $dates;
 
-    // ksm($data);
-    // return [];
-
+    // Send response.
     $response = new CacheableJsonResponse($data);
     return $response;
   }
