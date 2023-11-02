@@ -72,6 +72,14 @@ class Routes implements ContainerInjectionInterface {
         ]
       );
 
+      // Type Daily average.
+      $routes['timing_monito.api.type.daily_average'] = new Route(
+        '/api/timing-monitor/{type}/daily-average',
+        [
+          '_controller' => '\Drupal\timing_monitor\Controller\Api::dailyAverage',
+        ]
+      );
+
       // Auth options.
       // @todo setup settings and options for Authorization.
       // ksm($routes);
