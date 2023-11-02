@@ -95,7 +95,7 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
 
     $select = $this->database->select('timing_monitor_log', 'tm')->fields('tm', []);
 
-    $select->condition('type', $type);
+    $select->condition('type', $type, "LIKE");
     $select->orderBy('id', 'DESC');
     $select->range(0, 50);
 
