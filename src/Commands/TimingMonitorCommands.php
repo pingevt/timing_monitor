@@ -97,7 +97,7 @@ class TimingMonitorCommands extends DrushCommands {
    *   Count of items per page
    * @option sort
    *   Sort ordering
-   * @usage timing_monitor:types tm-tl
+   * @usage timing_monitor:type-list tm-tl
    *   Usage description
    * @table-style default
    * @field-labels
@@ -136,6 +136,68 @@ class TimingMonitorCommands extends DrushCommands {
       $type = $this->io()->choice(dt("Choose a type to list"), $choices);
       $input->setArgument('type', $type);
     }
+  }
+
+  /**
+   * Retrieves a list of averages for a given type by day.
+   *
+   * @param type
+   *   The log type to list
+   * @option start-day
+   *   Optional start date
+   * @option end-day
+   *   Optional end date
+   * @option days
+   *   How many days to include
+   * @usage timing_monitor:type-daily-avg tm-tda
+   *   Usage description
+   * @table-style default
+   * @field-labels
+   *   date: Date
+   *   avg: Average
+   *
+   * @command timing_monitor:type-daily-avg
+   * @aliases tm-tda
+   */
+  public function dailyAverage($type = "", $options = ['start-day' => "", 'end-day' => "", 'days' => 7, 'format' => 'table']) {
+    if (empty($type)) {
+      $types = $this->tmUtility->getTimingMonitorTypes();
+      $choices = array_combine(array_keys($types), array_keys($types));
+
+      $type = $this->io()->choice(dt("Choose a type to list"), $choices);
+    }
+
+    if ($options['start-day'] && $options['end-day']) {
+      $start_day_obj = \DateTime::createFromFormat("Y-m-d", $options['start-day']);
+      $end_day_obj = \DateTime::createFromFormat("Y-m-d", $options['end-day']);
+    }
+    else if ($options['start-day'] && !$options['end-day']) {
+      $start_day_obj = \DateTime::createFromFormat("Y-m-d", $options['start-day']);
+      $end_day_obj = (clone $start_day_obj)->modify("-" . $options['days'] . " days");
+    }
+    else if (!$options['start-day'] && $options['end-day']) {
+      $end_day_obj = \DateTime::createFromFormat("Y-m-d", $options['end-day']);
+      $start_day_obj = (clone $end_day_obj)->modify("+" . ($options['days'] - 1). " days");
+    }
+    else {
+      $start_day_obj = new \DateTime();
+      $end_day_obj = (clone $start_day_obj)->modify("-" . $options['days'] . " days");
+    }
+
+    $start_day_obj->setTime(23, 59, 59);
+    $end_day_obj->setTime(0, 0, 0);
+
+    $dates = $this->tmUtility->getTimingMonitorDailyAverage($type, $start_day_obj, $end_day_obj, $options['days']);
+
+    $data = [];
+    foreach($dates as $date => $average) {
+      $data[] = [
+        'date' => $date,
+        'avg' => $average,
+      ];
+    }
+
+    return new RowsOfFields($data);
   }
 
 }
