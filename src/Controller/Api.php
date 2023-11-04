@@ -108,7 +108,7 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
   /**
    * Callback for daily avereages for a specific type.
    */
-  public function dailyAverage(string $type, Request $request): CacheableJsonResponse | array {
+  public function dailyAverage(string $type, Request $request): CacheableJsonResponse {
 
     // Initialize return data.
     $data = [
@@ -136,6 +136,7 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
     // @todo setup caching.
 
     // Fill out the return data arrray.
+    $dates = [];
     for ($i = 0; $i < ($days); $i++) {
       $dates[(clone $start_day_obj)->modify("-$i days")->format('Y-m-d')] = NULL;
     }
