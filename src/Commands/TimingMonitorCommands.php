@@ -63,6 +63,28 @@ class TimingMonitorCommands extends DrushCommands {
     return new RowsOfFields($data);
   }
 
+  /**
+   * Retrieves the current types of the timing monitor.
+   *
+   * @option option-name
+   *   Description
+   * @usage timing_monitor:types tm-t
+   *   Usage description
+   * @table-style default
+   * @field-labels
+   *   id: ID
+   *   count: Count
+   *   avg: Avg
+   *
+   * @command timing_monitor:types
+   * @aliases tm-t
+   */
+  public function types($options = ['format' => 'table']) {
+
+    $data = $this->tmUtility->getTimingMonitorTypes();
+
+    return new RowsOfFields($data);
+  }
   }
 
 }

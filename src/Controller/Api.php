@@ -77,13 +77,7 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
       "data" => [],
     ];
 
-    $select = $this->database->select('timing_monitor_log', 'tm')->fields('tm', ['type']);
-    $select->addExpression('COUNT(*)', 'c');
-    $results = $select->groupBy('type')->execute()->fetchAll();
-
-    foreach ($results as $r) {
-      $data['data'][$r->type] = ['id' => $r->type, 'count' => $r->c];
-    }
+    $data['data'] = $this->tmUtility->getTimingMonitorTypes();
 
     $response = new CacheableJsonResponse($data);
     return $response;

@@ -62,6 +62,20 @@ class TimingMonitorUtility implements ContainerInjectionInterface {
     return $data;
   }
 
+  public function getTimingMonitorTypes(): array {
+    $data = [];
+
+    $select = $this->database->select('timing_monitor_log', 'tm')->fields('tm', ['type']);
+    $select->addExpression('COUNT(*)', 'c');
+    $select->addExpression('AVG(duration)', 'a');
+    $results = $select->groupBy('type')->execute()->fetchAll();
+
+    foreach ($results as $r) {
+      $data[$r->type] = ['id' => $r->type, 'count' => $r->c, 'avg' => $r->a];
+    }
+
+    return $data;
+  }
   }
 
 }
