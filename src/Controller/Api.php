@@ -93,13 +93,18 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
       "data" => [],
     ];
 
-    $select = $this->database->select('timing_monitor_log', 'tm')->fields('tm', []);
+    // Page is 0 based.
+    $page = $request->get('page') ?? 0;
+    $count = $request->get('count') ?? 50;
+    $sort = $request->get('sort') ?? "DESC";
 
-    $select->condition('type', $type, "LIKE");
-    $select->orderBy('id', 'DESC');
-    $select->range(0, 50);
+    if ($sort !== "ASC" && $sort !== "DESC") {
+      $data['status'] = "WARNING";
+      $data['msg'] = "Bad sort paramater, defaulting to DESC";
+      $sort = "DESC";
+    }
 
-    $data['data'] = $select->execute()->fetchAll(\PDO::FETCH_ASSOC);
+    $data['data'] = $this->tmUtility->getTimingMonitorTypeList($type, $page, $count, $sort);
 
     $response = new CacheableJsonResponse($data);
     return $response;
