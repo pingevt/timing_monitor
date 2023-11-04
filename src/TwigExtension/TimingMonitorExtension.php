@@ -4,7 +4,6 @@ namespace Drupal\timing_monitor\TwigExtension;
 
 use Drupal\timing_monitor\TimingMonitor;
 use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**

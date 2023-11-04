@@ -121,29 +121,32 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
 
     // @todo validate or filter $type.
     $type_match = (strpos($type, "%") !== FALSE) ? "LIKE" : "=";
-    $today = new \DateTime();
-    $today->setTime(23, 59, 59);
-    $days = $request->get('days') ?? 7;
-    $start_day = $request->get('startDate') ?? $today->format('Y-m-d');
-    $end_date_obj = (clone $today)->modify("-$days days");
+    // @todo validate start.
+    $start_day_obj = $request->get('start') ? \DateTime::createFromFormat("Y-m-d", $request->get('start')) : new \DateTime();
+    // ksm(strtotime($request->get('start')));
+    // ksm($start_day_obj);
+    $start_day_obj->setTime(23, 59, 59);
+    $days = $request->get('days') ? (int) $request->get('days') : 7;
+    // $start_day = $request->get('start') ?? $start_day_obj->format('Y-m-d');
+    $end_date_obj = (clone $start_day_obj)->modify("-$days days");
     $end_date_obj->setTime(0, 0, 0);
-    $end_day = $request->get('endDate') ?? $end_date_obj->format('Y-m-d');
+    // @todo validate end.
+    // $end_day = $request->get('end') ?? $end_date_obj->format('Y-m-d');
 
     // @todo setup caching.
 
     // Fill out the return data arrray.
-    for ($i = 0; $i < $days; $i++) {
-      $dates[(clone $today)->modify("-$i days")->format('Y-m-d')] = NULL;
+    for ($i = 0; $i < ($days); $i++) {
+      $dates[(clone $start_day_obj)->modify("-$i days")->format('Y-m-d')] = NULL;
     }
 
-    // $select = $this->database->select('timing_monitor_log', 'tm')->fields('tm', []);
-
+    // Build complex query.
     $query = $this->database->query('
       SELECT t.date, AVG(duration) avg
       FROM (
         SELECT duration, DATE_FORMAT(FROM_UNIXTIME(timestamp), :format) date
         FROM {timing_monitor_log}
-        WHERE type '. $type_match .' :type
+        WHERE type ' . $type_match . ' :type
         AND marker = :marker
         AND timestamp <= :start_date
         AND timestamp >= :end_date
@@ -153,7 +156,7 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
       ":format" => "%Y-%m-%d",
       ":type" => $type,
       ":marker" => TimingMonitor::FINISH,
-      ":start_date" => $today->format("U"),
+      ":start_date" => $start_day_obj->format("U"),
       ":end_date" => $end_date_obj->format("U"),
     ]);
 
@@ -162,7 +165,9 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
 
     // Fill out return data.
     foreach ($results as $result) {
-      $dates[$result['date']] = (float) $result['avg'];
+      if (in_array($result['date'], array_keys($dates))) {
+        $dates[$result['date']] = (float) $result['avg'];
+      }
     }
 
     $data['data']['dates'] = $dates;

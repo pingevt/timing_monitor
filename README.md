@@ -100,8 +100,8 @@ API Documentation
 | arg         | description | options |
 | ----------- | ----------- | ------- |
 | limit       |  | to be implemented |
-| startDate   |  | to be implemented |
-| endDate     |  | to be implemented |
+| start   |  | to be implemented |
+| end     |  | to be implemented |
 
 ### Example Response
 
@@ -153,8 +153,8 @@ API Documentation
 
 | arg         | description | options |
 | ----------- | ----------- | ------- |
-| startDate   |   | to be implemented |
-| endDate     |   | to be implemented |
+| start       |   | to be implemented |
+| end         |   | to be implemented |
 | days        |   | to be implemented |
 
 ### Example Response
