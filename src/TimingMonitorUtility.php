@@ -94,4 +94,48 @@ class TimingMonitorUtility implements ContainerInjectionInterface {
     return $select->execute()->fetchAll(\PDO::FETCH_ASSOC);
   }
 
+  public function getTimingMonitorDailyAverage(string $type, \DateTime $start_day_obj, \DateTime $end_day_obj, $days = 7): array {
+
+    // Fill out the return data arrray.
+    $dates = [];
+    for ($i = 0; $i < ($days); $i++) {
+      $dates[(clone $start_day_obj)->modify("-$i days")->format('Y-m-d')] = NULL;
+    }
+
+    // @todo validate or filter $type.
+    $type_match = (strpos($type, "%") !== FALSE) ? "LIKE" : "=";
+
+    // Build complex query.
+    $query = $this->database->query('
+      SELECT t.date, AVG(duration) avg
+      FROM (
+        SELECT duration, DATE_FORMAT(FROM_UNIXTIME(timestamp), :format) date
+        FROM {timing_monitor_log}
+        WHERE type ' . $type_match . ' :type
+        AND marker = :marker
+        AND timestamp <= :start_date
+        AND timestamp >= :end_date
+      ) as t
+      GROUP BY date
+    ', [
+      ":format" => "%Y-%m-%d",
+      ":type" => $type,
+      ":marker" => TimingMonitor::FINISH,
+      ":start_date" => $start_day_obj->format("U"),
+      ":end_date" => $end_day_obj->format("U"),
+    ]);
+
+    // Get results in an array of arrays.
+    $results = $query->fetchAll(\PDO::FETCH_ASSOC);
+
+    // Fill out return data.
+    foreach ($results as $result) {
+      if (in_array($result['date'], array_keys($dates))) {
+        $dates[$result['date']] = (float) $result['avg'];
+      }
+    }
+
+    return $dates;
+  }
+
 }

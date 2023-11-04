@@ -124,57 +124,37 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
       ],
     ];
 
-    // @todo validate or filter $type.
-    $type_match = (strpos($type, "%") !== FALSE) ? "LIKE" : "=";
     // @todo validate start.
-    $start_day_obj = $request->get('start') ? \DateTime::createFromFormat("Y-m-d", $request->get('start')) : new \DateTime();
-    // ksm(strtotime($request->get('start')));
-    // ksm($start_day_obj);
-    $start_day_obj->setTime(23, 59, 59);
+    // $start_day_obj = $request->get('start') ? \DateTime::createFromFormat("Y-m-d", $request->get('start')) : new \DateTime();
+    // $start_day_obj->setTime(23, 59, 59);
     $days = $request->get('days') ? (int) $request->get('days') : 7;
-    // $start_day = $request->get('start') ?? $start_day_obj->format('Y-m-d');
-    $end_date_obj = (clone $start_day_obj)->modify("-$days days");
-    $end_date_obj->setTime(0, 0, 0);
-    // @todo validate end.
-    // $end_day = $request->get('end') ?? $end_date_obj->format('Y-m-d');
+    // $end_day_obj = (clone $start_day_obj)->modify("-$days days");
+    // $end_day_obj->setTime(0, 0, 0);
+
+    if ($request->get('start') && $request->get('end')) {
+      $start_day_obj = \DateTime::createFromFormat("Y-m-d", $request->get('start'));
+      $end_day_obj = \DateTime::createFromFormat("Y-m-d", $request->get('end'));
+    }
+    else if ($request->get('start') && !$request->get('end')) {
+      $start_day_obj = \DateTime::createFromFormat("Y-m-d", $request->get('start'));
+      $end_day_obj = (clone $start_day_obj)->modify("-" . $days . " days");
+    }
+    else if (!$request->get('start') && $request->get('end')) {
+      $end_day_obj = \DateTime::createFromFormat("Y-m-d", $request->get('end'));
+      $start_day_obj = (clone $end_day_obj)->modify("+" . ($days - 1). " days");
+    }
+    else {
+      $start_day_obj = new \DateTime();
+      $end_day_obj = (clone $start_day_obj)->modify("-" . $days . " days");
+    }
+
+    $start_day_obj->setTime(23, 59, 59);
+    $end_day_obj->setTime(0, 0, 0);
+
 
     // @todo setup caching.
 
-    // Fill out the return data arrray.
-    $dates = [];
-    for ($i = 0; $i < ($days); $i++) {
-      $dates[(clone $start_day_obj)->modify("-$i days")->format('Y-m-d')] = NULL;
-    }
-
-    // Build complex query.
-    $query = $this->database->query('
-      SELECT t.date, AVG(duration) avg
-      FROM (
-        SELECT duration, DATE_FORMAT(FROM_UNIXTIME(timestamp), :format) date
-        FROM {timing_monitor_log}
-        WHERE type ' . $type_match . ' :type
-        AND marker = :marker
-        AND timestamp <= :start_date
-        AND timestamp >= :end_date
-      ) as t
-      GROUP BY date
-    ', [
-      ":format" => "%Y-%m-%d",
-      ":type" => $type,
-      ":marker" => TimingMonitor::FINISH,
-      ":start_date" => $start_day_obj->format("U"),
-      ":end_date" => $end_date_obj->format("U"),
-    ]);
-
-    // Get results in an array of arrays.
-    $results = $query->fetchAll(\PDO::FETCH_ASSOC);
-
-    // Fill out return data.
-    foreach ($results as $result) {
-      if (in_array($result['date'], array_keys($dates))) {
-        $dates[$result['date']] = (float) $result['avg'];
-      }
-    }
+    $dates = $this->tmUtility->getTimingMonitorDailyAverage($type, $start_day_obj, $end_day_obj, $days);
 
     $data['data']['dates'] = $dates;
 
