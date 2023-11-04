@@ -91,6 +91,7 @@ class TimingMonitorCommands extends DrushCommands {
    *
    * @param type
    *   The log type to list
+   *
    * @option page
    *   Page for ordering
    * @option count
@@ -117,7 +118,20 @@ class TimingMonitorCommands extends DrushCommands {
    * @command timing_monitor:type-list
    * @aliases tm-tl
    */
-  public function typeList($type, $options = ['page' => 0, 'count' => 50, 'sort' => 'DESC', 'format' => 'table']) {
+  public function typeList($type, $options = [
+    'page' => 0,
+    'count' => 50,
+    'sort' => 'DESC',
+    'format' => 'table'
+  ]) {
+
+    // Check for type param.
+    if (empty($type)) {
+      $types = $this->tmUtility->getTimingMonitorTypes();
+      $choices = array_combine(array_keys($types), array_keys($types));
+
+      $type = $this->io()->choice(dt("Choose a type to list"), $choices);
+    }
 
     $data = $this->tmUtility->getTimingMonitorTypeList($type, $options['page'], $options['count'], $options['sort']);
 
@@ -125,24 +139,11 @@ class TimingMonitorCommands extends DrushCommands {
   }
 
   /**
-   * @hook interact timing_monitor:type-list
-   */
-  public function interactType($input, $output): void {
-    if (empty($input->getArgument('type'))) {
-
-      $types = $this->tmUtility->getTimingMonitorTypes();
-      $choices = array_combine(array_keys($types), array_keys($types));
-
-      $type = $this->io()->choice(dt("Choose a type to list"), $choices);
-      $input->setArgument('type', $type);
-    }
-  }
-
-  /**
    * Retrieves a list of averages for a given type by day.
    *
    * @param type
    *   The log type to list
+   *
    * @option start-day
    *   Optional start date
    * @option end-day
@@ -159,7 +160,15 @@ class TimingMonitorCommands extends DrushCommands {
    * @command timing_monitor:type-daily-avg
    * @aliases tm-tda
    */
-  public function dailyAverage($type = "", $options = ['start-day' => "", 'end-day' => "", 'days' => 7, 'format' => 'table']) {
+  public function dailyAverage($type = "", $options = [
+    'start-day' => "",
+    'end-day' => "",
+    'days' => 7,
+    'format' =>
+    'table'
+  ]) {
+
+    // Check for type param.
     if (empty($type)) {
       $types = $this->tmUtility->getTimingMonitorTypes();
       $choices = array_combine(array_keys($types), array_keys($types));
@@ -171,13 +180,13 @@ class TimingMonitorCommands extends DrushCommands {
       $start_day_obj = \DateTime::createFromFormat("Y-m-d", $options['start-day']);
       $end_day_obj = \DateTime::createFromFormat("Y-m-d", $options['end-day']);
     }
-    else if ($options['start-day'] && !$options['end-day']) {
+    elseif ($options['start-day'] && !$options['end-day']) {
       $start_day_obj = \DateTime::createFromFormat("Y-m-d", $options['start-day']);
       $end_day_obj = (clone $start_day_obj)->modify("-" . $options['days'] . " days");
     }
-    else if (!$options['start-day'] && $options['end-day']) {
+    elseif (!$options['start-day'] && $options['end-day']) {
       $end_day_obj = \DateTime::createFromFormat("Y-m-d", $options['end-day']);
-      $start_day_obj = (clone $end_day_obj)->modify("+" . ($options['days'] - 1). " days");
+      $start_day_obj = (clone $end_day_obj)->modify("+" . ($options['days'] - 1) . " days");
     }
     else {
       $start_day_obj = new \DateTime();
@@ -190,7 +199,7 @@ class TimingMonitorCommands extends DrushCommands {
     $dates = $this->tmUtility->getTimingMonitorDailyAverage($type, $start_day_obj, $end_day_obj, $options['days']);
 
     $data = [];
-    foreach($dates as $date => $average) {
+    foreach ($dates as $date => $average) {
       $data[] = [
         'date' => $date,
         'avg' => $average,

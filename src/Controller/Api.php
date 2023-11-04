@@ -125,23 +125,19 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
     ];
 
     // @todo validate start.
-    // $start_day_obj = $request->get('start') ? \DateTime::createFromFormat("Y-m-d", $request->get('start')) : new \DateTime();
-    // $start_day_obj->setTime(23, 59, 59);
     $days = $request->get('days') ? (int) $request->get('days') : 7;
-    // $end_day_obj = (clone $start_day_obj)->modify("-$days days");
-    // $end_day_obj->setTime(0, 0, 0);
 
     if ($request->get('start') && $request->get('end')) {
       $start_day_obj = \DateTime::createFromFormat("Y-m-d", $request->get('start'));
       $end_day_obj = \DateTime::createFromFormat("Y-m-d", $request->get('end'));
     }
-    else if ($request->get('start') && !$request->get('end')) {
+    elseif ($request->get('start') && !$request->get('end')) {
       $start_day_obj = \DateTime::createFromFormat("Y-m-d", $request->get('start'));
       $end_day_obj = (clone $start_day_obj)->modify("-" . $days . " days");
     }
-    else if (!$request->get('start') && $request->get('end')) {
+    elseif (!$request->get('start') && $request->get('end')) {
       $end_day_obj = \DateTime::createFromFormat("Y-m-d", $request->get('end'));
-      $start_day_obj = (clone $end_day_obj)->modify("+" . ($days - 1). " days");
+      $start_day_obj = (clone $end_day_obj)->modify("+" . ($days - 1) . " days");
     }
     else {
       $start_day_obj = new \DateTime();
@@ -151,9 +147,7 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
     $start_day_obj->setTime(23, 59, 59);
     $end_day_obj->setTime(0, 0, 0);
 
-
     // @todo setup caching.
-
     $dates = $this->tmUtility->getTimingMonitorDailyAverage($type, $start_day_obj, $end_day_obj, $days);
 
     $data['data']['dates'] = $dates;
