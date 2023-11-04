@@ -47,6 +47,9 @@ class TimingMonitorUtility implements ContainerInjectionInterface {
     return rtrim($csv);
   }
 
+  /**
+   * Get timing monitor status.
+   */
   public function getTimingMonitorStatus(): array {
     $data = [
       "count" => 0,
@@ -62,6 +65,9 @@ class TimingMonitorUtility implements ContainerInjectionInterface {
     return $data;
   }
 
+  /**
+   * Get timing monitor types.
+   */
   public function getTimingMonitorTypes(): array {
     $data = [];
 
@@ -77,6 +83,9 @@ class TimingMonitorUtility implements ContainerInjectionInterface {
     return $data;
   }
 
+  /**
+   * Get a list of logs for a specific type.
+   */
   public function getTimingMonitorTypeList(string $type, int $page = 0, int $count = 50, string $sort_order = "DESC"): array {
 
     // Validate that we have a proper sort order,
@@ -94,6 +103,9 @@ class TimingMonitorUtility implements ContainerInjectionInterface {
     return $select->execute()->fetchAll(\PDO::FETCH_ASSOC);
   }
 
+  /**
+   * Get daily avereages for a specific type.
+   */
   public function getTimingMonitorDailyAverage(string $type, \DateTime $start_day_obj, \DateTime $end_day_obj, $days = 7): array {
 
     // Fill out the return data arrray.
