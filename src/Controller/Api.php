@@ -7,6 +7,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\timing_monitor\TimingMonitor;
+use Drupal\timing_monitor\TimingMonitorUtility;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -14,6 +15,13 @@ use Symfony\Component\HttpFoundation\Request;
  * Controller for API responses.
  */
 class Api extends ControllerBase implements ContainerInjectionInterface {
+
+  /**
+   * The Timing Monitor utility.
+   *
+   * @var \Drupal\timing_monitor\TimingMonitorUtility
+   */
+  protected $tmUtility;
 
   /**
    * The database connection.
@@ -25,7 +33,8 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
   /**
    * {@inheritdoc}
    */
-  public function __construct(Connection $database) {
+  public function __construct(TimingMonitorUtility $tm_utility, Connection $database) {
+    $this->tmUtility = $tm_utility;
     $this->database = $database;
   }
 
@@ -34,6 +43,7 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
+      $container->get('timing_monitor.utility'),
       $container->get('database')
     );
   }
@@ -51,11 +61,7 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
       ],
     ];
 
-    $select = $this->database->select('timing_monitor_log');
-    $data['data']['count'] = $select->countQuery()->execute()->fetchField();
-
-    $select = $this->database->select('timing_monitor_log');
-    $data['data']['type_count'] = $select->groupBy('type')->countQuery()->execute()->fetchField();
+    $data['data'] = $this->tmUtility->getTimingMonitorStatus();
 
     $response = new CacheableJsonResponse($data);
     return $response;

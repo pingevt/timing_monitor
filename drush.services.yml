@@ -1,0 +1,6 @@
+services:
+  timing_monitor.commands:
+    class: \Drupal\timing_monitor\Commands\TimingMonitorCommands
+    arguments: ['@timing_monitor.utility']
+    tags:
+      - { name: drush.command }
