@@ -85,6 +85,57 @@ class TimingMonitorCommands extends DrushCommands {
 
     return new RowsOfFields($data);
   }
+
+  /**
+   * Retrieves a list of logs for the given type.
+   *
+   * @param type
+   *   The log type to list
+   * @option page
+   *   Page for ordering
+   * @option count
+   *   Count of items per page
+   * @option sort
+   *   Sort ordering
+   * @usage timing_monitor:types tm-tl
+   *   Usage description
+   * @table-style default
+   * @field-labels
+   *   id: ID
+   *   uid: uid
+   *   session_uuid: session_uuid
+   *   type: type
+   *   marker: marker
+   *   message: message
+   *   variables: variables
+   *   path: path
+   *   method: method
+   *   timer: timer
+   *   duration: duration
+   *   timestamp: timestamp
+   *
+   * @command timing_monitor:type-list
+   * @aliases tm-tl
+   */
+  public function typeList($type, $options = ['page' => 0, 'count' => 50, 'sort' => 'DESC', 'format' => 'table']) {
+
+    $data = $this->tmUtility->getTimingMonitorTypeList($type, $options['page'], $options['count'], $options['sort']);
+
+    return new RowsOfFields($data);
+  }
+
+  /**
+   * @hook interact timing_monitor:type-list
+   */
+  public function interactType($input, $output): void {
+    if (empty($input->getArgument('type'))) {
+
+      $types = $this->tmUtility->getTimingMonitorTypes();
+      $choices = array_combine(array_keys($types), array_keys($types));
+
+      $type = $this->io()->choice(dt("Choose a type to list"), $choices);
+      $input->setArgument('type', $type);
+    }
   }
 
 }

@@ -76,6 +76,22 @@ class TimingMonitorUtility implements ContainerInjectionInterface {
 
     return $data;
   }
+
+  public function getTimingMonitorTypeList(string $type, int $page = 0, int $count = 50, string $sort_order = "DESC"): array {
+
+    // Validate that we have a proper sort order,
+    // so the query does not error out.
+    if ($sort_order !== "ASC" && $sort_order !== "DESC") {
+      $sort_order = "DESC";
+    }
+
+    $select = $this->database->select('timing_monitor_log', 'tm')->fields('tm', []);
+
+    $select->condition('type', $type, "LIKE");
+    $select->orderBy('id', $sort_order);
+    $select->range(($page * $count), $count);
+
+    return $select->execute()->fetchAll(\PDO::FETCH_ASSOC);
   }
 
 }
