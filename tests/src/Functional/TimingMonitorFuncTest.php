@@ -61,18 +61,45 @@ class TimingMonitorFuncTest extends BrowserTestBase {
 
     $this->adminUser = $this->drupalCreateUser([
       'access administration pages',
+      'view timing log',
     ]);
-    $this->authenticatedUser = $this->drupalCreateUser([]);
+    $this->authenticatedUser = $this->drupalCreateUser([
+      'use timing log api',
+    ]);
 
   }
 
   /**
    * Test Basic Functionality.
    */
-  public function testBasicFunc() {
+  public function testAuthAdminBasicFunc() {
     $session = $this->assertSession();
-
     $this->assertTrue(TRUE);
+
+    // Login as authenticated admin.
+    $this->drupalLogin($this->adminUser);
+
+    // Check that settings page exists, and 200.
+    $first_url = Url::fromRoute('timing_monitor.settings')->toString();
+    $this->drupalGet($first_url);
+    $session->statusCodeEquals(200);
+
+    // Check Page title on settings Page.
+    $session->titleEquals("Timing Monitor and errors");
+
+    // Check that settings exist.
+    $session->fieldEnabled("row_limit");
+    $session->fieldEnabled("directory");
+    $session->fieldEnabled("gzip");
+    $session->fieldEnabled("api");
+
+    // Check that view logs page exists, and 200.
+    $second_url = Url::fromRoute('timing_monitor.archive')->toString();
+    $this->drupalGet($second_url);
+    $session->statusCodeEquals(200);
+
+    // Check Page title on Log Page.
+    $session->titleEquals("Archive Logs");
   }
 
 }
