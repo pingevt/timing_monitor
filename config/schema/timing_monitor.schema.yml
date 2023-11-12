@@ -6,12 +6,23 @@ timing_monitor.settings:
     row_limit:
       type: integer
       label: 'Timing Monitor messages to keep'
+      constraints:
+        NotNull: []
+        AllowedValues: [0, 5, 100, 1000, 10000, 100000, 1000000]
     directory:
       type: string
       label: 'The directory, relative to public, to save the log files.'
+      constraints:
+        NotNull: []
     gzip:
-      type: bool
+      type: integer
       label: 'Whether or not to gzip the files.'
+      constraints:
+        NotNull: []
+        AllowedValues: [0, 1]
     api:
-      type: bool
+      type: integer
       label: 'Enable api access to timing data.'
+      constraints:
+        NotNull: []
+        AllowedValues: [0, 1]

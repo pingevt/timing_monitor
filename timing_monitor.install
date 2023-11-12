@@ -151,3 +151,19 @@ function timing_monitor_update_9003() {
 
   $schema->addIndex('timing_monitor_log', 'uuid', ['session_uuid'], $spec);
 }
+
+/**
+ * Update config entity.
+ */
+function timing_monitor_update_9004() {
+  $config = \Drupal::configFactory()->getEditable('timing_monitor.settings');
+
+  $data = $config->getRawData();
+
+  if (isset($data['dependencies'])) {
+    unset($data['dependencies']);
+  }
+
+  $config->setData($data);
+  $config->save();
+}
