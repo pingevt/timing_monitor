@@ -86,7 +86,6 @@ class TimingMonitorFuncTest extends BrowserTestBase {
     // Login as authenticated admin.
     $this->drupalLogin($this->adminUser);
 
-    
     $this->drupalGet('/admin/config');
     $session->statusCodeEquals(200);
 
@@ -97,14 +96,16 @@ class TimingMonitorFuncTest extends BrowserTestBase {
     $this->drupalGet($first_url);
     $session->statusCodeEquals(200);
 
+    dump(get_class($session));
+
     // Check Page title on settings Page.
     $title_element = $session->session->getPage()->find('css', 'title');
     if ($title_element) {
-      // throw new ExpectationException('No title element found on the page', $this->session->getDriver());
+      // Throw new ExpectationException('No title element found on the page', $this->session->getDriver());
       $actual_title = $title_element->getText();
       dump($actual_title);
     }
-    
+
     $session->titleEquals("Timing Monitor and errors");
 
     // Check that settings exist.
