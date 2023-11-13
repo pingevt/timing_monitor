@@ -63,6 +63,7 @@ class TimingMonitorFuncTest extends BrowserTestBase {
 
     $this->adminUser = $this->drupalCreateUser([
       'access administration pages',
+      'administer site configuration',
       'view timing log',
     ]);
     $this->authenticatedUser = $this->drupalCreateUser([
