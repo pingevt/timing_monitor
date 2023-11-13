@@ -188,4 +188,5 @@ jobs:
         continue-on-error: true
         run: |
           vendor/bin/phpunit --bootstrap $DRUPAL_ROOT/core/tests/bootstrap.php -c $MODULE_FOLDER/phpunit.xml $MODULE_FOLDER
+          ls -sla
           [ -f drupal_debug.txt ] cat drupal_debug.txt
