@@ -68,6 +68,10 @@ class TimingMonitorFuncTest extends BrowserTestBase {
       'use timing log api',
     ]);
 
+    // Set devel settings.
+    $config = $this->config('devel.settings');
+    $config->set('debug_logfile', DRUPAL_ROOT . '/drupal_debug.txt')->save();
+    $config->set('debug_pre', FALSE)->save();
   }
 
   /**
@@ -82,6 +86,8 @@ class TimingMonitorFuncTest extends BrowserTestBase {
 
     // Check that settings page exists, and 200.
     $first_url = Url::fromRoute('timing_monitor.settings')->toString();
+    ddm($first_url);
+    dump($first_url);
     $this->drupalGet($first_url);
     $session->statusCodeEquals(200);
 
