@@ -187,6 +187,7 @@ jobs:
         working-directory: ${{ env.DRUPAL_ROOT }}
         continue-on-error: true
         run: |
+          touch drupal_debug.txt
           vendor/bin/phpunit --bootstrap $DRUPAL_ROOT/core/tests/bootstrap.php -c $MODULE_FOLDER/phpunit.xml $MODULE_FOLDER
           
       - name: Print debug file
@@ -194,4 +195,4 @@ jobs:
         continue-on-error: true
         run: |
           ls -sla
-          [ -f drupal_debug.txt ] cat drupal_debug.txt
+          cat drupal_debug.txt
