@@ -98,6 +98,13 @@ class TimingMonitorFuncTest extends BrowserTestBase {
     $session->statusCodeEquals(200);
 
     // Check Page title on settings Page.
+    $title_element = $session->getPage()->find('css', 'title');
+    if ($title_element) {
+      // throw new ExpectationException('No title element found on the page', $this->session->getDriver());
+      $actual_title = $title_element->getText();
+      dump($actual_title);
+    }
+    
     $session->titleEquals("Timing Monitor and errors");
 
     // Check that settings exist.
