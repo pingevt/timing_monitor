@@ -85,6 +85,10 @@ class TimingMonitorFuncTest extends BrowserTestBase {
     // Login as authenticated admin.
     $this->drupalLogin($this->adminUser);
 
+    
+    $this->drupalGet('/admin/config');
+    $session->statusCodeEquals(200);
+
     // Check that settings page exists, and 200.
     $first_url = Url::fromRoute('timing_monitor.settings')->toString();
     ddm($first_url);
