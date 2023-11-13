@@ -3,10 +3,11 @@
 namespace Drupal\Tests\timing_monitor\Functional;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\Url;
 use Drupal\Tests\BrowserTestBase;
 
 /**
- *
+ * Test Timing Monitor.
  *
  * @group timing_monitor
  */
