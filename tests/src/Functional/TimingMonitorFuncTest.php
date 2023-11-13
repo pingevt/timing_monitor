@@ -23,6 +23,7 @@ class TimingMonitorFuncTest extends BrowserTestBase {
     'field',
     'text',
     'options',
+    'devel',
     'timing_monitor',
   ];
 
