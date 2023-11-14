@@ -115,11 +115,13 @@ class TimingMonitorFuncTest extends BrowserTestBase {
 
     // Check Page title on settings Page.
     // $title_element = $s->getPage()->find('css', 'title');
+    // phpcs:disable
     // if ($title_element) {
-    //   // Throw new ExpectationException('No title element found on the page', $this->session->getDriver());
-    //   $actual_title = $title_element->getText();
+      //   // Throw new ExpectationException('No title element found on the page', $this->session->getDriver());
+      //   $actual_title = $title_element->getText();
     //   dump($actual_title);
     // }
+    // phpcs:enable
     $session->titleEquals("Timing Monitor and errors | Drupal");
 
     // Check that settings exist.
