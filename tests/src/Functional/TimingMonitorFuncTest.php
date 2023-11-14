@@ -137,7 +137,7 @@ class TimingMonitorFuncTest extends BrowserTestBase {
     $session->statusCodeEquals(200);
 
     // Check Page title on Log Page.
-    $session->titleEquals("Archive Logs");
+    $session->titleEquals("Archive Logs | Drupal");
   }
 
 }
