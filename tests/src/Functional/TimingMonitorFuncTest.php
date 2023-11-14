@@ -95,11 +95,12 @@ class TimingMonitorFuncTest extends BrowserTestBase {
     dump($first_url);
     $this->drupalGet($first_url);
     $session->statusCodeEquals(200);
-
     dump(get_class($session));
+    $s = $this->getSession();
+    dump(get_class($s));
 
     // Check Page title on settings Page.
-    $title_element = $session->session->getPage()->find('css', 'title');
+    $title_element = $s->getPage()->find('css', 'title');
     if ($title_element) {
       // Throw new ExpectationException('No title element found on the page', $this->session->getDriver());
       $actual_title = $title_element->getText();
