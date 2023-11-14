@@ -77,6 +77,22 @@ class TimingMonitorFuncTest extends BrowserTestBase {
   }
 
   /**
+   * Test 403 of admin pages.
+   */
+  public function testAuthAdminUnAuthBasicFunc() {
+    $session = $this->assertSession();
+
+    $first_url = Url::fromRoute('timing_monitor.settings')->toString();
+    $this->drupalGet($first_url);
+    $session->statusCodeEquals(403);
+
+    $second_url = Url::fromRoute('timing_monitor.archive')->toString();
+    $this->drupalGet($second_url);
+    $session->statusCodeEquals(403);
+
+  }
+
+  /**
    * Test Basic Functionality.
    */
   public function testAuthAdminBasicFunc() {
@@ -107,7 +123,7 @@ class TimingMonitorFuncTest extends BrowserTestBase {
       dump($actual_title);
     }
 
-    $session->titleEquals("Timing Monitor and errors");
+    $session->titleEquals("Timing Monitor and errors | Drupal");
 
     // Check that settings exist.
     $session->fieldEnabled("row_limit");
