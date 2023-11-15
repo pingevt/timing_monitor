@@ -7,7 +7,7 @@ use Drupal\Tests\UnitTestCase;
 /**
  *
  */
-class TimingMonitortiming_monitorTest extends UnitTestCase {
+class TimingMonitorTests extends UnitTestCase {
 
   /**
    * Before a test method is run, setUp() is invoked.
