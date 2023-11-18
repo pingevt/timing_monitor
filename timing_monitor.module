@@ -77,12 +77,13 @@ function timing_monitor_cron() {
 }
 
 /**
- * Undocumented function
+ * Archive a single session.
  *
  * @param integer $row_limit
- * @return void
+ *
+ * @return string | NULL
  */
-function timing_monitor_archive_single_session(int $row_limit = 1000) {
+function timing_monitor_archive_single_session(int $row_limit = 1000): string | NULL {
 
   $connection = \Drupal::database();
 
@@ -95,7 +96,7 @@ function timing_monitor_archive_single_session(int $row_limit = 1000) {
 
   // If no results, return.
   if (!$last_UUID) {
-    return;
+    return NULL;
   }
 
   if (timing_monitor_archive_by_uuid($last_UUID)) {
