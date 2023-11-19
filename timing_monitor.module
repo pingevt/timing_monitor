@@ -318,10 +318,8 @@ function timing_monitor__archiving($count, $row_limit, &$context) {
 
 /**
  * Batch process finish function.
- *
- * @return void
  */
-function timing_monitor__archiving_finished($success, $results, $operations, $elapsed) {
+function timing_monitor__archiving_finished($success, $results, $operations, $elapsed): void {
   if ($success) {
     $message = \Drupal::translation()->formatPlural(count($results), 'One session processed.', '@count sessions processed.');
   }
