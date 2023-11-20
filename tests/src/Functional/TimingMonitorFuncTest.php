@@ -77,15 +77,17 @@ class TimingMonitorFuncTest extends BrowserTestBase {
   }
 
   /**
-   * Test 403 of admin pages.
+   * Test 403 of admin pages for unathenticated user.
    */
   public function testAuthAdminUnAuthBasicFunc() {
     $session = $this->assertSession();
 
+    // Check that settings page exists, and 403.
     $first_url = Url::fromRoute('timing_monitor.settings')->toString();
     $this->drupalGet($first_url);
     $session->statusCodeEquals(403);
 
+    // Check that view logs page exists, and 403.
     $second_url = Url::fromRoute('timing_monitor.archive')->toString();
     $this->drupalGet($second_url);
     $session->statusCodeEquals(403);
@@ -93,7 +95,7 @@ class TimingMonitorFuncTest extends BrowserTestBase {
   }
 
   /**
-   * Test Basic Functionality.
+   * Test admin pages for athenticated user.
    */
   public function testAuthAdminBasicFunc() {
     $session = $this->assertSession();
@@ -107,22 +109,17 @@ class TimingMonitorFuncTest extends BrowserTestBase {
 
     // Check that settings page exists, and 200.
     $first_url = Url::fromRoute('timing_monitor.settings')->toString();
-    ddm($first_url);
-    dump($first_url);
     $this->drupalGet($first_url);
     $session->statusCodeEquals(200);
-    dump(get_class($session));
     $s = $this->getSession();
-    dump(get_class($s));
 
     // Check Page title on settings Page.
-    $title_element = $s->getPage()->find('css', 'title');
-    if ($title_element) {
-      // Throw new ExpectationException('No title element found on the page', $this->session->getDriver());
-      $actual_title = $title_element->getText();
-      dump($actual_title);
-    }
-
+    // $title_element = $s->getPage()->find('css', 'title');
+    // if ($title_element) {
+    //   // Throw new ExpectationException('No title element found on the page', $this->session->getDriver());
+    //   $actual_title = $title_element->getText();
+    //   dump($actual_title);
+    // }
     $session->titleEquals("Timing Monitor and errors | Drupal");
 
     // Check that settings exist.
