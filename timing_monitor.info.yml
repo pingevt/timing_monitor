@@ -9,7 +9,7 @@ dependencies:
 configure: timing_monitor.settings
 
 
-# Information added by packaging script on 2023-11-04
-version: 1.0.0-rc1
-project: timing_monitor
-datestamp: 1699116312140
+# Information added by packaging script on 2024-01-27
+version: 1.0.0-rc2
+project: timing-monitor
+datestamp: 1706415818687
