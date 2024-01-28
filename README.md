@@ -141,7 +141,7 @@ API Documentation
 }
 ```
 
-## Endpoint: GET `/api/timing-monitor/{type}/list`
+## Endpoint: GET `/api/timing-monitor/{type}/daily-average`
 
 ### Path Arguments
 
