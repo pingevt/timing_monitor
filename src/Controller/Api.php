@@ -3,6 +3,7 @@
 namespace Drupal\timing_monitor\Controller;
 
 use Drupal\Core\Cache\CacheableJsonResponse;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Database\Connection;
@@ -80,6 +81,9 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
     $data['data'] = $this->tmUtility->getTimingMonitorTypes();
 
     $response = new CacheableJsonResponse($data);
+    $cache_context = new CacheableMetadata();
+    $cache_context->setCacheContexts(['user', 'url.path', 'url.query_args']);
+    $response->addCacheableDependency($cache_context);
     return $response;
   }
 
@@ -107,6 +111,9 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
     $data['data'] = $this->tmUtility->getTimingMonitorTypeList($type, $page, $count, $sort);
 
     $response = new CacheableJsonResponse($data);
+    $cache_context = new CacheableMetadata();
+    $cache_context->setCacheContexts(['user', 'url.path', 'url.query_args']);
+    $response->addCacheableDependency($cache_context);
     return $response;
   }
 
@@ -154,6 +161,9 @@ class Api extends ControllerBase implements ContainerInjectionInterface {
 
     // Send response.
     $response = new CacheableJsonResponse($data);
+    $cache_context = new CacheableMetadata();
+    $cache_context->setCacheContexts(['user', 'url.path', 'url.query_args']);
+    $response->addCacheableDependency($cache_context);
     return $response;
   }
 
