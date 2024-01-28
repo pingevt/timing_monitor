@@ -59,7 +59,7 @@ class Routes implements ContainerInjectionInterface {
       $routes = [];
 
       // Status.
-      $routes['timing_monito.api.status'] = new Route(
+      $routes['timing_monitor.api.status'] = new Route(
         '/api/timing-monitor/status',
         [
           '_controller' => '\Drupal\timing_monitor\Controller\Api::status',
@@ -67,7 +67,7 @@ class Routes implements ContainerInjectionInterface {
       );
 
       // Type.
-      $routes['timing_monito.api.types'] = new Route(
+      $routes['timing_monitor.api.types'] = new Route(
         '/api/timing-monitor/types',
         [
           '_controller' => '\Drupal\timing_monitor\Controller\Api::types',
@@ -75,7 +75,7 @@ class Routes implements ContainerInjectionInterface {
       );
 
       // Type list.
-      $routes['timing_monito.api.type.list'] = new Route(
+      $routes['timing_monitor.api.type.list'] = new Route(
         '/api/timing-monitor/{type}/list',
         [
           '_controller' => '\Drupal\timing_monitor\Controller\Api::typeList',
@@ -83,7 +83,7 @@ class Routes implements ContainerInjectionInterface {
       );
 
       // Type Daily average.
-      $routes['timing_monito.api.type.daily_average'] = new Route(
+      $routes['timing_monitor.api.type.daily_average'] = new Route(
         '/api/timing-monitor/{type}/daily-average',
         [
           '_controller' => '\Drupal\timing_monitor\Controller\Api::dailyAverage',
