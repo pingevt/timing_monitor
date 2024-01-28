@@ -4,6 +4,7 @@ namespace Drupal\timing_monitor\Routing;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -21,10 +22,18 @@ class Routes implements ContainerInjectionInterface {
   protected $configFactory;
 
   /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $config_factory) {
+  public function __construct(ConfigFactoryInterface $config_factory, ModuleHandlerInterface $module_handler) {
     $this->configFactory = $config_factory;
+    $this->moduleHandler = $module_handler;
   }
 
   /**
@@ -32,7 +41,8 @@ class Routes implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('config.factory')
+      $container->get('config.factory'),
+      $container->get('module_handler')
     );
   }
 
@@ -85,6 +95,10 @@ class Routes implements ContainerInjectionInterface {
       foreach ($routes as $route => $r_data) {
         $r_data->setMethods(['GET']);
         $r_data->setRequirement('_permission', 'use timing log api');
+
+        if ($this->moduleHandler->moduleExists('key_auth')) {
+          $r_data->setOption('_auth', ['key_auth']);
+        }
         $route_collection->add($route, $r_data);
       }
     }
