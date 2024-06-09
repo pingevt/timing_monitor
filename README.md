@@ -194,4 +194,8 @@ CHANGELOG
 
 # Unreleased
 
- -
+
+# 1.0.1
+
+ - Increase size for 'type' and 'marker' cols in the log DB table.
+ - Verify string are correct length to insert into table.
