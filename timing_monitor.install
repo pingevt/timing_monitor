@@ -44,14 +44,14 @@ function timing_monitor__timing_monitor_log_spec() {
       ],
       'type' => [
         'type' => 'varchar_ascii',
-        'length' => 64,
+        'length' => 128,
         'not null' => TRUE,
         'default' => '',
         'description' => 'Type of log message, for example "user" or "page not found."',
       ],
       'marker' => [
         'type' => 'varchar_ascii',
-        'length' => 64,
+        'length' => 128,
         'not null' => FALSE,
         'default' => NULL,
         'description' => 'Type of marker. Can be start, mark, finish',
@@ -166,4 +166,17 @@ function timing_monitor_update_9004() {
 
   $config->setData($data);
   $config->save();
+}
+
+/**
+ * Update table/col definitions.
+ *
+ */
+function timing_monitor_update_10001() {
+  $database = \Drupal::database();
+  $schema = $database->schema();
+
+  $log_table = timing_monitor__timing_monitor_log_spec();
+  $schema->changeField('timing_monitor_log', 'type', 'type', $log_table['fields']['type']);
+  $schema->changeField('timing_monitor_log', 'marker', 'marker', $log_table['fields']['marker']);
 }

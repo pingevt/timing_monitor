@@ -152,9 +152,9 @@ class TimingMonitor {
     foreach ($this->monLog as $log) {
       $data[] = [
         'uid' => $current_user_id,
-        'session_uuid' => $this->uuid,
-        'type' => $log['type'],
-        'marker' => $log['marker'],
+        'session_uuid' => substr($this->uuid, 0, 128),
+        'type' => substr($log['type'], 0, 128),
+        'marker' => substr($log['marker'], 0, 128),
         'message' => $log['msg'],
         'variables' => serialize($log['vars']),
         'path' => $request->getRequestUri(),
@@ -178,6 +178,7 @@ class TimingMonitor {
    *   The data to be logged.
    */
   protected function saveLogToDb(array $data) {
+
 
     $insert = \Drupal::service('database')->insert('timing_monitor_log');
     $insert->fields(array_keys($data[0]));
