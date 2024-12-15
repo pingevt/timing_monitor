@@ -6,6 +6,7 @@
  */
 
 use Bluecadet\DrupalPackageManager\Checker;
+use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\update\UpdateManagerInterface;
 
@@ -153,7 +154,7 @@ function timing_monitor_archive_by_uuid(string $uuid):bool {
 
     $destination = $dir . "/" . $rows_arrays[0]['id'] . ".csv";
 
-    $r = $filesystem->saveData($data_str, $destination, FileSystemInterface::EXISTS_RENAME);
+    $r = $filesystem->saveData($data_str, $destination, FileExists::Rename);
 
     // Check for gzip.
     // phpcs:disable

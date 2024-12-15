@@ -182,11 +182,11 @@ MAINTAINERS
 
 Current maintainers:
 
- * Pete Inge (pingevt) - https://www.drupal.org/user/411339
+* Pete Inge (pingevt) - https://www.drupal.org/user/411339
 
 This project has been sponsored by:
 
- * Bluecadet - https://www.bluecadet.com/
+* Bluecadet - https://www.bluecadet.com/
 
 
 CHANGELOG
@@ -194,8 +194,13 @@ CHANGELOG
 
 # Unreleased
 
+# 1.1.x
+
+- Removes support for D9
+- Add support for D11
+
 
 # 1.0.1
 
- - Increase size for 'type' and 'marker' cols in the log DB table.
- - Verify string are correct length to insert into table.
+- Increase size for 'type' and 'marker' cols in the log DB table.
+- Verify string are correct length to insert into table.
