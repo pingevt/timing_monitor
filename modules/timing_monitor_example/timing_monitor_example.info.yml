@@ -1,0 +1,9 @@
+name: "Timing Monitor - Example"
+type: module
+description: Examples for using the Timing Monitor.
+package: Development
+core_version_requirement: ^10 || ^11
+
+dependencies:
+
+configure: timing_monitor.settings

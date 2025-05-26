@@ -1,0 +1,26 @@
+<?php
+
+/**
+ *
+ */
+
+use Drupal\timing_monitor\TimingMonitor;
+
+/**
+ *
+ */
+function timing_monitor_example_example(): void {
+  $tm = TimingMonitor::getInstance();
+
+  static $counter = 0;
+
+  $tm->logTiming("example:" . $counter, TimingMonitor::START, "Starting...");
+  // Simulate some processing.
+  usleep(100000); // Sleep for 0.1 seconds to simulate processing time.
+  $tm->logTiming("example:" . $counter, TimingMonitor::MARK, "...Mark...");
+  // Simulate more processing.
+  usleep(200000); // Sleep for 0.2 seconds to simulate more processing time.
+  $tm->logTiming("example:" . $counter, TimingMonitor::FINISH, "...Finishing");
+
+  $counter++;
+}

@@ -1,0 +1,7 @@
+timing_monitor_example.page-1:
+  path: '/timing-monitor-example/page-1'
+  defaults:
+    _controller: '\Drupal\timing_monitor_example\Controller\ExampleController::page1'
+    _title: 'Timing Monitor and errors'
+  requirements:
+    _permission: true
