@@ -24,6 +24,8 @@ class TimingMonitorSubscriber extends HttpExceptionSubscriberBase implements Eve
     $events = parent::getSubscribedEvents();
     // $events['kernel.request'] = ['onRequest', 28];
     $events['kernel.finish_request'] = ['finishRequest'];
+    $events['kernel.finish_request'] = ['finishRequest'];
+    $events['kernel.terminate'] = ['terminate'];
     return $events;
   }
 
@@ -146,6 +148,18 @@ class TimingMonitorSubscriber extends HttpExceptionSubscriberBase implements Eve
    *   The Kernel event.
    */
   public function finishRequest(KernelEvent $event) {
+    // if (TimingMonitor::hasInstance()) {
+    //   TimingMonitor::getInstance()->saveTimingLog();
+    // }
+  }
+
+  /**
+   * Event callback for 'kernel.finish_request' event.
+   *
+   * @param \Symfony\Component\HttpKernel\Event\KernelEvent $event
+   *   The Kernel event.
+   */
+  public function terminate(KernelEvent $event) {
     if (TimingMonitor::hasInstance()) {
       TimingMonitor::getInstance()->saveTimingLog();
     }
