@@ -179,7 +179,6 @@ class TimingMonitor {
    */
   protected function saveLogToDb(array $data) {
 
-
     $insert = \Drupal::service('database')->insert('timing_monitor_log');
     $insert->fields(array_keys($data[0]));
 

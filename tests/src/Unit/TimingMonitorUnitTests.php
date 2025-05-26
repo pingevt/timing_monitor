@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\timing_monitor\Unit;
 
+use Drupal\timing_monitor\TimingMonitor;
 use Drupal\Tests\UnitTestCase;
 
 /**
@@ -22,6 +23,23 @@ class TimingMonitorUnitTests extends UnitTestCase {
    */
   public function testCheckStaticVars() {
     $this->assertTrue(TRUE);
+  }
+
+  /**
+   * Test the singleton behavior of TimingMonitor::getInstance().
+   */
+  public function testGetInstance() {
+    // Get the first instance of TimingMonitor.
+    $instance1 = TimingMonitor::getInstance();
+
+    // Get the second instance of TimingMonitor.
+    $instance2 = TimingMonitor::getInstance();
+
+    // Assert that both instances are the same.
+    $this->assertSame($instance1, $instance2, 'TimingMonitor::getInstance() should return the same instance.');
+
+    // Assert that the instance is of the correct class.
+    $this->assertInstanceOf(TimingMonitor::class, $instance1, 'The instance should be of type TimingMonitor.');
   }
 
   /**
