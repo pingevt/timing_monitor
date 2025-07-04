@@ -170,7 +170,6 @@ function timing_monitor_update_9004() {
 
 /**
  * Update table/col definitions.
- *
  */
 function timing_monitor_update_10001() {
   $database = \Drupal::database();

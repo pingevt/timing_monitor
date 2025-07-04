@@ -1,13 +1,14 @@
 <?php
 
 /**
- *
+ * @file
+ * Example module to demonstrate the use of TimingMonitor.
  */
 
 use Drupal\timing_monitor\TimingMonitor;
 
 /**
- *
+ * Example function to demonstrate the use of TimingMonitor.
  */
 function timing_monitor_example_example(): void {
   $tm = TimingMonitor::getInstance();
@@ -16,10 +17,12 @@ function timing_monitor_example_example(): void {
 
   $tm->logTiming("example:" . $counter, TimingMonitor::START, "Starting...");
   // Simulate some processing.
-  usleep(100000); // Sleep for 0.1 seconds to simulate processing time.
+  // Sleep for 0.1 seconds to simulate processing time.
+  usleep(100000);
   $tm->logTiming("example:" . $counter, TimingMonitor::MARK, "...Mark...");
   // Simulate more processing.
-  usleep(200000); // Sleep for 0.2 seconds to simulate more processing time.
+  // Sleep for 0.2 seconds to simulate more processing time.
+  usleep(200000);
   $tm->logTiming("example:" . $counter, TimingMonitor::FINISH, "...Finishing");
 
   $counter++;

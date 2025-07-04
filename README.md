@@ -34,6 +34,7 @@ USAGE
 -----
 
 ```php
+
 $tm = TimingMonitor::getInstance();
 
 $tm->logTiming("preprocess_node:$bundle:" . $variables['view_mode'], TimingMonitor::START, "Starting...");

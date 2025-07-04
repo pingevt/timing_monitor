@@ -8,7 +8,6 @@
 use Bluecadet\DrupalPackageManager\Checker;
 use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\update\UpdateManagerInterface;
 
 /**
  * Callback for available field values.
@@ -80,9 +79,11 @@ function timing_monitor_cron() {
 /**
  * Archive a single session.
  *
- * @param integer $row_limit
+ * @param int $row_limit
+ *   The number of rows to limit the archive to. Default is 1000.
  *
- * @return string | NULL
+ * @return string|null
+ *   The UUID of the archived session, or NULL if no session was found.
  */
 function timing_monitor_archive_single_session(int $row_limit = 1000): string | NULL {
 
@@ -185,7 +186,7 @@ function timing_monitor_update_status_alter(&$projects) {
   $filtered_projects = [];
 
   foreach ($modules as $user => $user_data) {
-    $filtered_projects += array_filter($projects, function($v) use ($user_data) {
+    $filtered_projects += array_filter($projects, function ($v) use ($user_data) {
         return in_array($v, $user_data);
     }, ARRAY_FILTER_USE_KEY);
   }
